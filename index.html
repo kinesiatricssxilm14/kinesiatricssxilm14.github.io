@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruida Hu 胡瑞达 - academic page</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 添加字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- 添加图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 页头和导航栏 -->
+    <header id="header">
+        <div class="container">
+            <div class="logo">
+                <h1>Ruida Hu 胡瑞达</h1>
+            </div>
+            <nav>
+                <button class="hamburger" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#education">Education</a></li>
+                    <li><a href="#publications">Publications</a></li>
+                    <li><a href="#activities">Activities</a></li>
+                    <li><a href="#experiences">Experiences</a></li>
+                    <li><a href="#honors">Awards</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main>
+        <!-- 个人简介部分 -->
+        <section id="about" class="hero-section">
+            <div class="container">
+                <div class="profile-container">
+                    <div class="profile-image">
+                        <!-- 个人头像 -->
+                        <div class="avatar-container">
+                            <img src="about_image/photo.jpg" alt="个人头像" class="avatar-image">
+                        </div>
+                    </div>
+                    <div class="profile-content">
+                        <!-- <h2>Ruida Hu 胡瑞达</h2> -->
+                        <h2 class="section-title">
+                    <span class="section-icon">👨‍💻</span>
+                    About Me
+                </h2>
+                        <p>I am currently a Master's student at the School of Computer Science and Technology, Harbin Institute of Technology, Shenzhen (<strong>HITSZ</strong>), supervised by Professor Cuiyun Gao.
+                        <p>My research is focused on areas such as <strong>Software Engineering</strong> and <strong>LLM Agents</strong>.</p>
+                        <p>Concurrently, I am working as an intern at the Trae AI department at ByteDance.</p>
+                        <p>My MBTI type is <strong>ENFP</strong>.🐕</p>
+                        <div class="social-links">
+                            <a href="mailto:your.email@example.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+                            <a href="https://scholar.google.com/citations?user=DQtBFXsAAAAJ&hl=zh-CN&oi=ao" target="_blank" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
+                            <a href="https://orcid.org/my-orcid?orcid=0009-0000-9221-2788" target="_blank" title="ORCID"><i class="fab fa-orcid"></i></a>
+                            <a href="https://github.com/kinesiatricssxilm14" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 教育背景部分 -->
+        <section id="education" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="section-icon">🎓</span>
+                    Education Background
+                </h2>
+                <div class="education-grid">
+                    <!-- 教育经历1 -->
+                    <div class="education-card">
+                        <h3 class="education-degree">Master</h3>
+                        <p class="education-institution">Harbin Institute of Technology, Shenzhen</p>
+                        <p class="education-period">2024.09 - Present</p>
+                        <p class="education-description">Electronic Information Engineering</p>
+                        <p class="chinese-description">电子信息</p>
+                    </div>
+
+                    <!-- 教育经历2 -->
+                    <div class="education-card">
+                        <h3 class="education-degree">Bachelor</h3>
+                        <p class="education-institution">Harbin Institute of Technology, Shenzhen</p>
+                        <p class="education-period">2020.09 - 2024.06</p>
+                        <p class="education-description">Computer Science and Technology</p>
+                        <p class="chinese-description">计算机科学与技术</p>
+                    </div>
+                    
+                    <!-- 教育经历3 -->
+                    <div class="education-card">
+                        <h3 class="education-degree">Senior High School</h3>
+                        <p class="education-institution">The First High School of Changsha, Hunan</p>
+                        <p class="education-period">2017.09 - 2020.07</p>
+                        <p class="chinese-description">长沙市第一中学</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 出版物部分 -->
+        <section id="publications" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="section-icon">📚</span>
+                    Publications
+                </h2>
+                <p class="co-first-author-note">#Co-first author  *Corresponding author</p>
+                <!-- <p class="corresponding-author-note">* Corresponding author</p> -->
+                <!-- 第一作者论文 -->
+                <h3 class="publication-category">First-Author Papers</h3>
+                <div class="publications-list">
+                    <!-- 论文1 -->
+                    <article class="publication-card" onclick="openPaperModal('repo2run')">
+                        <div class="paper-image">
+                            <img src="paper_image/repo2run.png" alt="Repo2Run" class="paper-thumbnail">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-header">
+                                <span class="ccf-badge ccf-a">CCF-A</span>
+                                <h3 class="publication-title">Repo2Run: Automated Building Executable Environment for Code Repository at Scale</h3>
+                            </div>
+                            <p class="publication-authors"><strong>Ruida Hu</strong>, Chao Peng<span class="corresponding-author">*</span>, Xinchen Wang, Junjielong Xu, Cuiyun Gao<span class="corresponding-author">*</span></p>
+                            <p class="publication-spotlight"><i class="fas fa-star"></i> <strong>Spotlight Presentation</strong></p>
+                            <p class="publication-venue">29th Annual Conference on Neural Information Processing Systems (NeurIPS 2025)</p>
+                            <div class="publication-links">
+                                <a href="https://arxiv.org/pdf/2502.13681" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
+                                <a href="https://github.com/bytedance/Repo2Run" class="btn btn-small" onclick="event.stopPropagation()">Code</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- 论文2 -->
+                    <article class="publication-card" onclick="openPaperModal('coderepoqa')">
+                        <div class="paper-image">
+                            <img src="paper_image/coderepoqa.png" alt="CodeRepoQA" class="paper-thumbnail">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-header">
+                                <span class="ccf-badge ccf-a">CCF-A</span>
+                                <h3 class="publication-title">Understanding Large Language Model Performance in Software Engineering: A Large-scale Question Answering Benchmark</h3>
+                            </div>
+                            <p class="publication-authors"><strong>Ruida Hu</strong>, Chao Peng, Jingyi Ren, Bo Jiang, Xiangxin Meng, Qinyun Wu, Pengfei Gao, Xinchen Wang, Cuiyun Gao<span class="corresponding-author">*</span></p>
+                            <p class="publication-venue">48th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR 2025 short paper)</p>
+                            <div class="publication-links">
+                                <a href="https://dl.acm.org/doi/pdf/10.1145/3726302.3730262" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
+                                <a href="https://github.com/kinesiatricssxilm14/CodeRepoQA" class="btn btn-small" onclick="event.stopPropagation()">Code</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="publication-card" onclick="openPaperModal('reposvul')">
+                        <div class="paper-image">
+                            <img src="paper_image/reposvul.png" alt="ReposVul" class="paper-thumbnail">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-header">
+                                <span class="ccf-badge ccf-a">CCF-A</span>
+                                <h3 class="publication-title">Reposvul: A repository-level high-quality vulnerability dataset</h3>
+                            </div>
+                            <p class="publication-authors">Xinchen Wang<span class="co-first-author"><sup>#</sup></span>, <strong>Ruida Hu</strong><span class="co-first-author"><sup>#</sup></span>, Cuiyun Gao<span class="corresponding-author">*<sup></span>, Xin-Cheng Wen, Yujia Chen, Qing Liao</p>
+                            <p class="publication-spotlight"><i class="fas fa-star"></i> <strong>Best Paper Award</strong></p>
+                            <p class="publication-venue">46th International Conference on Software Engineering: Companion Proceedings (ICSE 2024 Industry Challenge Track)</p>
+                            <div class="publication-links">
+                                <a href="https://arxiv.org/pdf/2401.13169" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
+                                <a href="https://github.com/Eshe0922/ReposVul" class="btn btn-small" onclick="event.stopPropagation()">Code</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                
+                <!-- 合作论文 -->
+                <h3 class="publication-category">Collaborative Papers</h3>
+                <div class="publications-list">
+                    <!-- 论文2 -->
+                    <article class="publication-card" onclick="openPaperModal('trae-agent')">
+                        <div class="paper-image">
+                            <img src="paper_image/trae_agent.png" alt="Trae Agent" class="paper-thumbnail">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-header">
+                                <span class="ccf-badge preprint">Preprint</span>
+                                <h3 class="publication-title">Trae Agent: An LLM-based Agent for Software Engineering with Test-time Scaling</h3>
+                            </div>
+                            <p class="publication-authors">Pengfei Gao, Zhao Tian, Xiangxin Meng, Xinchen Wang, <strong>Ruida Hu</strong>, Yuanan Xiao, Yizhou Liu, Zhao Zhang, Junjie Chen, Cuiyun Gao, Yun Lin, Yingfei Xiong, Chao Peng, Xia Liu, Trae Research Team</p>
+                            <p class="publication-venue">Arxiv July, 2025</p>
+                            <div class="publication-links">
+                                <a href="https://arxiv.org/pdf/2507.23370?" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
+                                <a href="https://github.com/bytedance/trae-agent" class="btn btn-small" onclick="event.stopPropagation()">Code</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="publications-list">
+                    <!-- 论文2 -->
+                    <article class="publication-card" onclick="openPaperModal('codevisionary')">
+                        <div class="paper-image">
+                            <img src="paper_image/codevisionary.png" alt="CodeVisionary" class="paper-thumbnail">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-header">
+                                <span class="ccf-badge ccf-a">CCF-A</span>
+                                <h3 class="publication-title">CodeVisionary: An Agent-based Framework for Evaluating Large Language Models in Code Generation</h3>
+                            </div>
+                            <p class="publication-authors">Xinchen Wang, Pengfei Gao, Chao Peng, <strong>Ruida Hu</strong>, Cuiyun Gao</p>
+                            <p class="publication-venue">40th IEEE/ACM International Conference on Automated Software Engineering (ASE 2025)</p>
+                            <div class="publication-links">
+                                <a href="https://arxiv.org/pdf/2504.13472" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
+                                <a href="https://anonymous.4open.science/r/CodeVisionary" class="btn btn-small" onclick="event.stopPropagation()">Code</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="publications-list">
+                    <!-- 论文3 -->
+                    <article class="publication-card" onclick="openPaperModal('repomastereval')">
+                        <div class="paper-image">
+                            <img src="paper_image/repomastereval.png" alt="RepoMasterEval" class="paper-thumbnail">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-header">
+                                <span class="ccf-badge ccf-a">CCF-A</span>
+                                <h3 class="publication-title">Repomastereval: Evaluating code completion via real-world repositories</h3>
+                            </div>
+                            <p class="publication-authors">Qinyun Wu, Chao Peng, Pengfei Gao, <strong>Ruida Hu</strong>, Haoyu Gan, Bo Jiang, Jinhe Tang, Zhiwen Deng, Zhanming Guan, Cuiyun Gao, Xia Liu, Ping Yang</p>
+                            <p class="publication-venue">40th IEEE/ACM International Conference on Automated Software Engineering (ASE 2025 Industry Showcase)</p>
+                            <div class="publication-links">
+                                <a href="https://arxiv.org/pdf/2408.03519?" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="publication-card" onclick="openPaperModal('aegis')">
+                        <div class="paper-image">
+                            <img src="paper_image/aegis.png" alt="AEGIS" class="paper-thumbnail">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-header">
+                                <span class="ccf-badge ccf-a">CCF-A</span>
+                                <h3 class="publication-title">AEGIS: An agent-based framework for general bug reproduction from issue descriptions</h3>
+                            </div>
+                            <p class="publication-authors">Xinchen Wang, Pengfei Gao, Xiangxin Meng, Chao Peng, <strong>Ruida Hu</strong>, Yun Lin, Cuiyun Gao</p>
+                            <p class="publication-venue">33rd ACM International Conference on the Foundations of Software Engineering (FSE 2025 Industry Track)</p>
+                            <div class="publication-links">
+                                <a href="https://dl.acm.org/doi/pdf/10.1145/3696630.3728557" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="publication-card" onclick="openPaperModal('vuleval')">
+                        <div class="paper-image">
+                            <img src="paper_image/vuleval.png" alt="VulEval" class="paper-thumbnail">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-header">
+                                <span class="ccf-badge preprint">Preprint</span>
+                                <h3 class="publication-title">Vuleval: Towards repository-level evaluation of software vulnerability detection</h3>
+                            </div>
+                            <p class="publication-authors">Xin-Cheng Wen, Xinchen Wang, Yujia Chen, <strong>Ruida Hu</strong>, David Lo, Cuiyun Gao</p>
+                            <p class="publication-venue">Arxiv April, 2024</p>
+                            <div class="publication-links">
+                                <a href="https://arxiv.org/pdf/2404.15596" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="publication-card" onclick="openPaperModal('pyconf')">
+                        <div class="paper-image">
+                            <img src="paper_image/pyconf.png" alt="PyConf" class="paper-thumbnail">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-header">
+                                <span class="ccf-badge ccf-a">CCF-A</span>
+                                <h3 class="publication-title">Less is more? an empirical study on configuration issues in python pypi ecosystem</h3>
+                            </div>
+                            <p class="publication-authors">Yun Peng, <strong>Ruida Hu</strong>, Ruoke Wang, Cuiyun Gao, Shuqing Li, Michael R Lyu</p>
+                            <p class="publication-venue">46th international conference on software engineering (ICSE 2024)</p>
+                            <div class="publication-links">
+                                <a href="https://arxiv.org/pdf/2310.12598" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
+                                <a href="https://github.com/JohnnyPeng18/PyConf" class="btn btn-small" onclick="event.stopPropagation()">Code</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 实习经历部分 -->
+        <section id="activities" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="section-icon">🚀</span>
+                    Activities
+                </h2>
+                <div class="activities-list">
+                    <!-- 实习经历 -->
+                    <article class="activity-item">
+                        <div class="activity-content">
+                            <h3 class="activity-title">Intern at Trae AI group in ByteDance Ltd.</h3>
+                            <!-- <p class="activity-company">Intern at ByteDance Ltd. Trae AI group</p> -->
+                            <p class="activity-period">June 2024 - Present</p>
+                            <p class="activity-description">I am working on AI for SE and benchmark for code tasks, and working with Chao Peng and Pengfei Gao.</p>
+                        </div>
+                        <div class="activity-image">
+                            <img src="activity_image/trae-ai-logo.jpeg" alt="Trae AI" class="trae-logo">
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 学术活动经历部分 -->
+        <section id="experiences" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="section-icon">💼</span>
+                    Experiences
+                </h2>
+                <div class="experiences-list">
+                    <!-- 会议参与经历 -->
+                    <article class="experience-item">
+                        <div class="experience-icon">
+                            <!-- FSE/ISSTA 2025 logo placeholder -->
+                            <img src="activity_image/FSE-2025-logo.png" alt="FSE/ISSTA 2025" class="conference-logo" data-conference="fse2025">
+                        </div>
+                        <div class="experience-content">
+                            <h3 class="experience-title">FSE/ISSTA 2025</h3>
+                            <p class="experience-location">Trondheim, Norway</p>
+                            <p class="experience-period">June 2025</p>
+                        </div>
+                    </article>
+
+                    <article class="experience-item">
+                        <div class="experience-icon">
+                            <!-- Internetware 2024 logo placeholder -->
+                            <img src="activity_image/internetware-2024-logo.png" alt="Internetware 2024" class="conference-logo" data-conference="internetware2024">
+                        </div>
+                        <div class="experience-content">
+                            <h3 class="experience-title">Internetware 2024</h3>
+                            <p class="experience-location">Macau, China</p>
+                            <p class="experience-period">July 2024</p>
+                        </div>
+                    </article>
+
+                    <article class="experience-item">
+                        <div class="experience-icon">
+                            <!-- ICSE 2024 logo placeholder -->
+                            <img src="activity_image/icse-2024-logo.png" alt="ICSE 2024" class="conference-logo" data-conference="icse2024">
+                        </div>
+                        <div class="experience-content">
+                            <h3 class="experience-title">ICSE 2024</h3>
+                            <p class="experience-location">Lisbon, Portugal</p>
+                            <p class="experience-period">April 2024</p>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 荣誉奖项部分 -->
+        <section id="honors" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="section-icon">🏆</span>
+                    Honors & Awards
+                </h2>
+                <div class="honors-list">
+                    <div class="honor-item">
+                        <span class="honor-title">Best Paper Award</span>
+                        <span class="honor-details">ICSE 2024 Industry Challenge Track, 2024</span>
+                    </div>
+                    <!-- 可以在这里添加更多荣誉奖项 -->
+                    
+                    <div class="honor-item">
+                        <span class="honor-title">Outstanding Graduates (优秀毕业生)</span>
+                        <span class="honor-details">Harbin Institute of Technology, 2024</span>
+                    </div>
+                   
+                    <div class="honor-item">
+                        <span class="honor-title">Outstanding student model (优秀学生标兵)</span>
+                        <span class="honor-details">Harbin Institute of Technology, 2024</span>
+                    </div>
+
+                    <div class="honor-item">
+                        <span class="honor-title">Huawei Intelligent Base Scholarship (华为智能基座奖学金)</span>
+                        <span class="honor-details">Huawei, 2024</span>
+                    </div>
+
+                    <div class="honor-item">
+                        <span class="honor-title">Master's Academic Special Scholarship of HITSZ * 2 (最高级)</span>
+                        <span class="honor-details">Harbin Institute of Technology, Shenzhen, 2025-2026</span>
+                    </div>
+
+                    <div class="honor-item">
+                        <span class="honor-title">Master's Academic First-class Scholarship of HITSZ * 1</span>
+                        <span class="honor-details">Harbin Institute of Technology, Shenzhen, 2024</span>
+                    </div>
+
+                    <div class="honor-item">
+                        <span class="honor-title">Bachelor's Academic First-class Scholarship of HITSZ * 2 (最高级)</span>
+                        <span class="honor-details">Harbin Institute of Technology, Shenzhen, 2023-2024</span>
+                    </div>
+
+                    <div class="honor-item">
+                        <span class="honor-title">Bachelor's Academic Third-class Scholarship of HITSZ * 1</span>
+                        <span class="honor-details">Harbin Institute of Technology, Shenzhen, 2022</span>
+                    </div>
+
+                    <div class="honor-item">
+                        <span class="honor-title">Meritorious</span>
+                        <span class="honor-details">Mathematical Contest in Modeling / Interdisciplinary Contest in Modeling (MCM / ICM), 2023</span>
+                    </div>
+
+                    <div class="honor-item">
+                        <span class="honor-title">First Prize</span>
+                        <span class="honor-details">China Undergraduate Mathematical Contest in Modeling (Guangdong Province), 2023</span>
+                    </div>
+
+                    <div class="honor-item">
+                        <span class="honor-title">First Prize</span>
+                        <span class="honor-details">The Chinese Mathematics Competitions (CMC) Preliminary Round, 2023</span>
+                    </div>
+
+                    <div class="honor-item">
+                        <span class="honor-title">Third Prize</span>
+                        <span class="honor-details">National Student Computer System Capability Challenge (龙芯杯) Final Round, 2023</span>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系方式部分 -->
+        <section id="contact" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="section-icon">📧</span>
+                    Get In Touch
+                </h2>
+                <div class="contact-content">
+                    <p>If you are interested in my research or have any questions, please feel free to contact me via the following email:</p>
+                    <p class="email">200111107@stu.hit.edu.cn</p>
+                    <p class="email">buotte@qq.com</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 论文详情模态框 -->
+    <div id="paperModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closePaperModal()">&times;</span>
+            <div id="modalContent">
+                <!-- 动态内容将在这里插入 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 This page is produced using Trae IDE.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

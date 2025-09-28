@@ -461,6 +461,65 @@
         </div>
     </div>
 
+    <!-- 访问统计组件 -->
+    <div id="visitStats" class="visit-stats-container">
+        <div class="visit-stats-toggle" onclick="toggleVisitStats()">
+            <i class="fas fa-chart-bar"></i>
+            <span>访问统计</span>
+        </div>
+        <div class="visit-stats-panel" id="visitStatsPanel">
+            <div class="stats-header">
+                <h3><i class="fas fa-analytics"></i> 访问统计</h3>
+                <button class="close-stats" onclick="toggleVisitStats()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="stats-content">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">总访问量</span>
+                        <span class="stat-value" id="totalVisits">0</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">今日访问</span>
+                        <span class="stat-value" id="todayVisits">0</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">当前位置</span>
+                        <span class="stat-value" id="currentLocation">获取中...</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">访问地区</span>
+                        <div class="location-list" id="locationList">
+                            <div class="loading">加载中...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-footer">
+                <small>* 统计数据仅供参考，保护用户隐私</small>
+            </div>
+        </div>
+    </div>
+
     <!-- 页脚 -->
     <footer>
         <div class="container">

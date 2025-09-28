@@ -303,3 +303,211 @@ window.onclick = function(event) {
         closePaperModal();
     }
 }
+
+// ===== 访问统计功能 =====
+
+// 访问统计数据存储
+const visitStats = {
+    totalVisits: 0,
+    todayVisits: 0,
+    locations: {},
+    currentLocation: '获取中...',
+    lastVisitDate: null
+};
+
+// 初始化访问统计
+function initVisitStats() {
+    // 从localStorage加载数据
+    loadVisitData();
+    
+    // 更新访问计数
+    updateVisitCount();
+    
+    // 获取用户位置信息
+    getUserLocation();
+    
+    // 更新显示
+    updateStatsDisplay();
+    
+    // 保存数据
+    saveVisitData();
+}
+
+// 从localStorage加载访问数据
+function loadVisitData() {
+    const savedData = localStorage.getItem('visitStatsData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        visitStats.totalVisits = data.totalVisits || 0;
+        visitStats.todayVisits = data.todayVisits || 0;
+        visitStats.locations = data.locations || {};
+        visitStats.lastVisitDate = data.lastVisitDate;
+    }
+}
+
+// 保存访问数据到localStorage
+function saveVisitData() {
+    localStorage.setItem('visitStatsData', JSON.stringify(visitStats));
+}
+
+// 更新访问计数
+function updateVisitCount() {
+    const today = new Date().toDateString();
+    
+    // 总访问量增加
+    visitStats.totalVisits++;
+    
+    // 检查是否是新的一天
+    if (visitStats.lastVisitDate !== today) {
+        visitStats.todayVisits = 1;
+        visitStats.lastVisitDate = today;
+    } else {
+        visitStats.todayVisits++;
+    }
+}
+
+// 获取用户位置信息
+function getUserLocation() {
+    // 使用免费的IP地理位置API
+    fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.city && data.country_name) {
+                const location = `${data.city}, ${data.country_name}`;
+                visitStats.currentLocation = location;
+                
+                // 更新地区访问统计
+                if (visitStats.locations[location]) {
+                    visitStats.locations[location]++;
+                } else {
+                    visitStats.locations[location] = 1;
+                }
+                
+                // 更新显示
+                updateStatsDisplay();
+                saveVisitData();
+            }
+        })
+        .catch(error => {
+            console.log('获取位置信息失败:', error);
+            visitStats.currentLocation = '未知位置';
+            updateStatsDisplay();
+        });
+}
+
+// 更新统计显示
+function updateStatsDisplay() {
+    // 更新总访问量
+    const totalElement = document.getElementById('totalVisits');
+    if (totalElement) {
+        totalElement.textContent = visitStats.totalVisits.toLocaleString();
+    }
+    
+    // 更新今日访问
+    const todayElement = document.getElementById('todayVisits');
+    if (todayElement) {
+        todayElement.textContent = visitStats.todayVisits.toLocaleString();
+    }
+    
+    // 更新当前位置
+    const locationElement = document.getElementById('currentLocation');
+    if (locationElement) {
+        locationElement.textContent = visitStats.currentLocation;
+    }
+    
+    // 更新访问地区列表
+    updateLocationList();
+}
+
+// 更新地区列表显示
+function updateLocationList() {
+    const locationListElement = document.getElementById('locationList');
+    if (!locationListElement) return;
+    
+    // 按访问次数排序
+    const sortedLocations = Object.entries(visitStats.locations)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 5); // 只显示前5个地区
+    
+    if (sortedLocations.length === 0) {
+        locationListElement.innerHTML = '<div class="loading">暂无数据</div>';
+        return;
+    }
+    
+    const locationHTML = sortedLocations.map(([location, count]) => `
+        <div class="location-item">
+            <span class="location-name">${location}</span>
+            <span class="location-count">${count}</span>
+        </div>
+    `).join('');
+    
+    locationListElement.innerHTML = locationHTML;
+}
+
+// 切换访问统计面板显示
+function toggleVisitStats() {
+    const panel = document.getElementById('visitStatsPanel');
+    if (panel) {
+        panel.classList.toggle('active');
+    }
+}
+
+// 检查是否为管理员（简单的密码验证）
+function isAdmin() {
+    const adminPassword = localStorage.getItem('adminPassword');
+    return adminPassword === 'admin123'; // 简单的密码验证
+}
+
+// 管理员登录
+function adminLogin() {
+    const password = prompt('请输入管理员密码:');
+    if (password === 'admin123') {
+        localStorage.setItem('adminPassword', password);
+        alert('管理员登录成功！');
+        updateStatsVisibility();
+        return true;
+    } else if (password !== null) {
+        alert('密码错误！');
+    }
+    return false;
+}
+
+// 管理员登出
+function adminLogout() {
+    localStorage.removeItem('adminPassword');
+    updateStatsVisibility();
+    alert('已退出管理员模式');
+}
+
+// 更新统计组件的可见性
+function updateStatsVisibility() {
+    const statsContainer = document.getElementById('visitStats');
+    if (!statsContainer) return;
+    
+    if (isAdmin()) {
+        statsContainer.style.display = 'block';
+    } else {
+        statsContainer.style.display = 'none';
+    }
+}
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    // 延迟初始化访问统计，避免影响页面加载速度
+    setTimeout(() => {
+        initVisitStats();
+        updateStatsVisibility();
+    }, 1000);
+    
+    // 添加管理员快捷键 (Ctrl+Shift+A)
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+            e.preventDefault();
+            if (isAdmin()) {
+                adminLogout();
+            } else {
+                adminLogin();
+            }
+        }
+    });
+});

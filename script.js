@@ -499,9 +499,19 @@ document.addEventListener('DOMContentLoaded', function() {
         updateStatsVisibility();
     }, 1000);
     
-    // 添加管理员快捷键 (Ctrl+Shift+A)
+    // 添加管理员快捷键 (多种兼容方式)
     document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        // 方式1: Ctrl+Shift+A
+        if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.keyCode === 65)) {
+            e.preventDefault();
+            if (isAdmin()) {
+                adminLogout();
+            } else {
+                adminLogin();
+            }
+        }
+        // 方式2: Ctrl+Alt+S (备用快捷键)
+        else if (e.ctrlKey && e.altKey && (e.key === 'S' || e.keyCode === 83)) {
             e.preventDefault();
             if (isAdmin()) {
                 adminLogout();
@@ -510,4 +520,34 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    
+    // 添加隐藏的管理员入口 - 连续点击页脚5次
+    let footerClickCount = 0;
+    let footerClickTimer = null;
+    const footer = document.querySelector('footer');
+    if (footer) {
+        footer.addEventListener('click', function() {
+            footerClickCount++;
+            
+            // 清除之前的计时器
+            if (footerClickTimer) {
+                clearTimeout(footerClickTimer);
+            }
+            
+            // 如果5秒内点击5次，触发管理员登录
+            if (footerClickCount >= 5) {
+                footerClickCount = 0;
+                if (isAdmin()) {
+                    adminLogout();
+                } else {
+                    adminLogin();
+                }
+            } else {
+                // 5秒后重置计数
+                footerClickTimer = setTimeout(() => {
+                    footerClickCount = 0;
+                }, 5000);
+            }
+        });
+    }
 });

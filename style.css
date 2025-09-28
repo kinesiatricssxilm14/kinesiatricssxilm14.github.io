@@ -1214,6 +1214,7 @@ footer {
     transition: var(--transition);
     font-size: 14px;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .visit-stats-toggle:hover {
@@ -1226,6 +1227,7 @@ footer {
     bottom: 60px;
     right: 0;
     width: 320px;
+    max-width: 90vw;
     background: var(--card-bg);
     border-radius: var(--border-radius);
     box-shadow: var(--card-shadow);
@@ -1235,6 +1237,7 @@ footer {
     transform: translateY(20px);
     transition: var(--transition);
     backdrop-filter: blur(10px);
+    overflow: hidden;
 }
 
 .visit-stats-panel.active {
@@ -1271,6 +1274,12 @@ footer {
     padding: 4px;
     border-radius: 4px;
     transition: var(--transition);
+    font-size: 16px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .close-stats:hover {
@@ -1279,11 +1288,13 @@ footer {
 
 .stats-content {
     padding: 16px 20px;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .stat-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
     padding: 12px 0;
     border-bottom: 1px solid rgba(167, 243, 208, 0.3);
@@ -1303,6 +1314,7 @@ footer {
     justify-content: center;
     color: var(--primary-color);
     font-size: 14px;
+    flex-shrink: 0;
 }
 
 .stat-info {
@@ -1310,6 +1322,7 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    min-width: 0;
 }
 
 .stat-label {
@@ -1322,6 +1335,7 @@ footer {
     font-size: 16px;
     font-weight: 600;
     color: var(--text-color);
+    word-break: break-word;
 }
 
 .location-list {
@@ -1344,6 +1358,10 @@ footer {
 .location-name {
     color: var(--text-color);
     font-weight: 500;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .location-count {
@@ -1353,6 +1371,8 @@ footer {
     padding: 2px 6px;
     border-radius: 10px;
     font-size: 10px;
+    margin-left: 8px;
+    flex-shrink: 0;
 }
 
 .loading {

@@ -1534,8 +1534,8 @@ footer {
     border-radius: var(--border-radius);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     z-index: 10000;
-    min-width: 400px;
-    max-width: 600px;
+    min-width: 600px;
+    max-width: 800px;
     max-height: 80vh;
     overflow-y: auto;
     backdrop-filter: blur(10px);
@@ -1577,47 +1577,35 @@ footer {
     padding: var(--spacing-md);
 }
 
-.stats-section {
-    margin-bottom: var(--spacing-md);
-    padding: var(--spacing-sm);
-    background: var(--light-gray);
+.visitor-map-admin {
+    text-align: center;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.visitor-map-admin img {
+    max-width: 100%;
+    height: auto;
     border-radius: 8px;
-    border-left: 4px solid var(--primary-color);
-}
-
-.stats-section h4 {
-    margin: 0 0 var(--spacing-sm) 0;
-    color: var(--primary-color);
-    font-size: 1rem;
-}
-
-.stats-section p {
-    margin: 4px 0;
-    color: var(--text-color);
-    font-size: 0.9rem;
-}
-
-.location-stats {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    color: var(--text-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
     
-    /* 访问统计响应式 */
-    .visit-stats-container {
-        bottom: 15px;
-        right: 15px;
-    }
-    
-    .visit-stats-panel {
-        width: 280px;
-        right: -20px;
-    }
-    
-    .visit-stats-toggle {
-        padding: 10px 14px;
-        font-size: 13px;
-    }
+/* 访问统计响应式 */
+.visit-stats-container {
+    bottom: 15px;
+    right: 15px;
+}
+
+.visit-stats-panel {
+    width: 280px;
+    right: -20px;
+}
+
+.visit-stats-toggle {
+    padding: 10px 14px;
+    font-size: 13px;
 }
 
 @media (max-width: 576px) {

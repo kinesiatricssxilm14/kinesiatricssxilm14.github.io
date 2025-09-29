@@ -802,39 +802,37 @@ function showAdminPanel() {
         document.body.appendChild(adminPanel);
     }
     
-    // 获取不蒜子统计数据
-    const busuanziUV = document.getElementById('busuanzi_value_site_uv')?.textContent || '加载中...';
-    const busuanziPV = document.getElementById('busuanzi_value_site_pv')?.textContent || '加载中...';
-    
-    // 获取本地地区统计
-    const locationStats = Object.entries(visitStats.locations)
-        .map(([location, count]) => `${location}: ${count}次`)
-        .join('<br>') || '暂无地区数据';
-    
     adminPanel.innerHTML = `
         <div class="admin-panel-header">
-            <h3>📊 管理员统计面板</h3>
+            <h3>🗺️ 全球访客地图</h3>
             <button onclick="adminLogout()" class="admin-close-btn">×</button>
         </div>
         <div class="admin-panel-content">
-            <div class="stats-section">
-                <h4>🌐 不蒜子全球统计</h4>
-                <p>总访客数: ${busuanziUV}</p>
-                <p>总浏览量: ${busuanziPV}</p>
-            </div>
-            <div class="stats-section">
-                <h4>📍 地区访问统计 (本地)</h4>
-                <div class="location-stats">${locationStats}</div>
-            </div>
-            <div class="stats-section">
-                <h4>🕐 网站信息</h4>
-                <p>建站时间: 2025年10月29日</p>
-                <p>统计方式: 不蒜子 + 本地地区统计</p>
+            <div class="visitor-map-admin">
+                <script type="text/javascript" id="mapmyvisitors" src="//mapmyvisitors.com/map.js?d=Th3z3scpZxp7wRHqgH2y3juYt433kgvLx5Cd4_AsQT4&cl=ffffff&w=a"></script>
             </div>
         </div>
     `;
     
     adminPanel.style.display = 'block';
+    
+    // 重新加载地图脚本
+    setTimeout(() => {
+        const existingScript = document.getElementById('mapmyvisitors');
+        if (existingScript) {
+            existingScript.remove();
+        }
+        
+        const newScript = document.createElement('script');
+        newScript.type = 'text/javascript';
+        newScript.id = 'mapmyvisitors';
+        newScript.src = '//mapmyvisitors.com/map.js?d=Th3z3scpZxp7wRHqgH2y3juYt433kgvLx5Cd4_AsQT4&cl=ffffff&w=a';
+        
+        const mapContainer = document.querySelector('.visitor-map-admin');
+        if (mapContainer) {
+            mapContainer.appendChild(newScript);
+        }
+    }, 100);
 }
 
 // 隐藏管理员面板

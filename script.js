@@ -315,113 +315,337 @@ const visitStats = {
     lastVisitDate: null
 };
 
-// CountAPI配置
-const COUNTAPI_CONFIG = {
-    namespace: 'kinesiatricssxilm14-github-io',
-    key: 'total-visits',
-    todayKey: 'today-visits-' + new Date().toISOString().split('T')[0], // 每日唯一key
-    locationPrefix: 'location-'
+// 全球访问统计配置 - 使用免费的访问统计服务
+const GLOBAL_STATS_CONFIG = {
+    // 使用 visitorbadge.io 作为主要服务
+    services: {
+        primary: 'https://visitor-badge-reloaded.herokuapp.com/badge',
+        fallback: 'https://api.countapi.xyz'
+    },
+    siteId: 'kinesiatrics-homepage', // 网站唯一标识
+    fallbackToLocal: true
 };
 
 // 初始化访问统计
 function initVisitStats() {
+    console.log('🚀 初始化全球访问统计系统...');
+    
     // 获取用户位置信息
     getUserLocation();
     
-    // 更新全球访问计数
-    updateGlobalVisitCount();
-    
-    // 更新今日访问计数
-    updateTodayVisitCount();
-    
-    // 加载地区统计数据
-    loadLocationStats();
+    // 使用真正的全球统计服务
+    initGlobalVisitStats();
 }
 
-// 更新全球访问计数
-async function updateGlobalVisitCount() {
+// 初始化全球访问统计时也要加载地区数据
+async function initGlobalVisitStats() {
+    console.log('📊 连接全球访问统计服务...');
+    
     try {
-        console.log('🌍 正在获取全球访问统计...');
-        const url = `https://api.countapi.xyz/hit/${COUNTAPI_CONFIG.namespace}/${COUNTAPI_CONFIG.key}`;
-        console.log('API URL:', url);
+        // 记录总访问量
+        await recordGlobalVisit();
         
-        const response = await fetch(url);
-        const data = await response.json();
+        // 记录今日访问量
+        await recordDailyVisit();
         
-        console.log('✅ 全球访问统计响应:', data);
-        visitStats.totalVisits = data.value || 0;
+        // 获取并显示统计数据
+        await loadGlobalStats();
+        
+        // 加载地区统计数据
+        await loadGlobalLocationStats();
+        
+        // 更新显示
         updateStatsDisplay();
+        
     } catch (error) {
-        console.error('❌ 获取全球访问统计失败:', error);
-        // 降级到本地存储
-        loadLocalVisitData();
+        console.error('❌ 全球统计服务连接失败，使用本地模式:', error);
+        // 降级到本地统计
+        initLocalFallbackStats();
     }
 }
 
-// 更新今日访问计数
-async function updateTodayVisitCount() {
+// 记录全球访问
+async function recordGlobalVisit() {
     try {
-        console.log('📅 正在获取今日访问统计...');
-        const url = `https://api.countapi.xyz/hit/${COUNTAPI_CONFIG.namespace}/${COUNTAPI_CONFIG.todayKey}`;
-        console.log('Today API URL:', url);
+        // 使用免费的计数API服务
+        const response = await fetch(`https://api.countapi.xyz/hit/${GLOBAL_STATS_CONFIG.siteId}/total-visits`, {
+            method: 'GET',
+            mode: 'cors'
+        });
         
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        console.log('✅ 今日访问统计响应:', data);
-        visitStats.todayVisits = data.value || 0;
-        updateStatsDisplay();
+        if (response.ok) {
+            const data = await response.json();
+            console.log('✅ 全球访问计数成功:', data.value);
+            visitStats.totalVisits = data.value;
+            return data.value;
+        } else {
+            throw new Error('API响应失败');
+        }
     } catch (error) {
-        console.error('❌ 获取今日访问统计失败:', error);
+        console.error('❌ 记录全球访问失败:', error);
+        // 尝试备用服务
+        return await recordVisitFallback('total');
     }
 }
 
-// 更新地区访问统计
+// 记录今日访问
+async function recordDailyVisit() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const dailyKey = `daily-${today}`;
+        
+        const response = await fetch(`https://api.countapi.xyz/hit/${GLOBAL_STATS_CONFIG.siteId}/${dailyKey}`, {
+            method: 'GET',
+            mode: 'cors'
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log('✅ 今日访问计数成功:', data.value);
+            visitStats.todayVisits = data.value;
+            return data.value;
+        } else {
+            throw new Error('API响应失败');
+        }
+    } catch (error) {
+        console.error('❌ 记录今日访问失败:', error);
+        return await recordVisitFallback('daily');
+    }
+}
+
+// 备用访问记录方法
+async function recordVisitFallback(type) {
+    console.log(`🔄 使用备用方法记录${type}访问...`);
+    
+    // 使用本地存储作为备用
+    const key = type === 'total' ? 'global-total-visits' : `daily-visits-${new Date().toISOString().split('T')[0]}`;
+    let count = parseInt(localStorage.getItem(key) || '0');
+    
+    // 检查是否是新的访问（简单的重复访问检测）
+    const sessionKey = `session-${type}-recorded`;
+    if (!sessionStorage.getItem(sessionKey)) {
+        count++;
+        localStorage.setItem(key, count.toString());
+        sessionStorage.setItem(sessionKey, 'true');
+    }
+    
+    if (type === 'total') {
+        visitStats.totalVisits = count;
+    } else {
+        visitStats.todayVisits = count;
+    }
+    
+    return count;
+}
+
+// 加载全球统计数据
+async function loadGlobalStats() {
+    try {
+        // 获取总访问量
+        const totalResponse = await fetch(`https://api.countapi.xyz/get/${GLOBAL_STATS_CONFIG.siteId}/total-visits`, {
+            method: 'GET',
+            mode: 'cors'
+        });
+        
+        if (totalResponse.ok) {
+            const totalData = await totalResponse.json();
+            visitStats.totalVisits = totalData.value || 0;
+        }
+        
+        // 获取今日访问量
+        const today = new Date().toISOString().split('T')[0];
+        const dailyResponse = await fetch(`https://api.countapi.xyz/get/${GLOBAL_STATS_CONFIG.siteId}/daily-${today}`, {
+            method: 'GET',
+            mode: 'cors'
+        });
+        
+        if (dailyResponse.ok) {
+            const dailyData = await dailyResponse.json();
+            visitStats.todayVisits = dailyData.value || 0;
+        }
+        
+        console.log('📈 全球统计数据加载完成:', {
+            total: visitStats.totalVisits,
+            today: visitStats.todayVisits
+        });
+        
+    } catch (error) {
+        console.error('❌ 加载全球统计数据失败:', error);
+        // 使用本地数据作为备用
+        loadLocalFallbackStats();
+    }
+}
+
+// 本地备用统计
+function initLocalFallbackStats() {
+    console.log('📱 启用本地备用统计模式...');
+    
+    // 从本地存储加载数据
+    loadLocalVisitData();
+    
+    // 生成唯一的访问ID
+    const visitId = generateVisitId();
+    
+    // 使用本地存储 + 时间戳的方式模拟全球统计
+    const globalKey = 'global-visit-stats';
+    const todayKey = 'today-visit-stats-' + new Date().toISOString().split('T')[0];
+    
+    // 获取或初始化全球统计
+    let globalStats = JSON.parse(localStorage.getItem(globalKey) || '{"total": 0, "visitors": []}');
+    let todayStats = JSON.parse(localStorage.getItem(todayKey) || '{"count": 0, "visitors": []}');
+    
+    // 检查是否是新访问者（基于浏览器指纹）
+    if (!globalStats.visitors.includes(visitId)) {
+        globalStats.total++;
+        globalStats.visitors.push(visitId);
+        localStorage.setItem(globalKey, JSON.stringify(globalStats));
+    }
+    
+    if (!todayStats.visitors.includes(visitId)) {
+        todayStats.count++;
+        todayStats.visitors.push(visitId);
+        localStorage.setItem(todayKey, JSON.stringify(todayStats));
+    }
+    
+    // 更新显示数据
+    visitStats.totalVisits = globalStats.total;
+    visitStats.todayVisits = todayStats.count;
+    
+    console.log('✅ 本地统计数据更新完成:', {
+        total: visitStats.totalVisits,
+        today: visitStats.todayVisits
+    });
+    
+    updateStatsDisplay();
+}
+
+// 生成访问者唯一ID（基于浏览器指纹）
+function generateVisitId() {
+    // 使用浏览器特征生成相对唯一的ID
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = '14px Arial';
+    ctx.fillText('Browser fingerprint', 2, 2);
+    
+    const fingerprint = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width + 'x' + screen.height,
+        new Date().getTimezoneOffset(),
+        canvas.toDataURL()
+    ].join('|');
+    
+    // 简单哈希
+    let hash = 0;
+    for (let i = 0; i < fingerprint.length; i++) {
+        const char = fingerprint.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // 转换为32位整数
+    }
+    
+    return 'visitor_' + Math.abs(hash).toString(36);
+}
+
+// 纯本地模式
+function useLocalOnlyMode() {
+    console.log('📱 使用纯本地统计模式...');
+    
+    const today = new Date().toDateString();
+    
+    // 检查是否是今天第一次访问
+    if (visitStats.lastVisitDate !== today) {
+        visitStats.todayVisits = 1;
+        visitStats.lastVisitDate = today;
+    } else {
+        visitStats.todayVisits++;
+    }
+    
+    // 总访问量增加
+    visitStats.totalVisits++;
+    
+    // 保存到本地存储
+    saveLocalVisitData();
+    updateStatsDisplay();
+}
+
+// 更新地区访问统计（全球版本）
 async function updateLocationVisitCount(location) {
     if (!location) return;
     
+    console.log('🌏 更新地区统计 (全球模式):', location);
+    
     try {
-        console.log('🌏 正在更新地区统计:', location);
-        const locationKey = COUNTAPI_CONFIG.locationPrefix + encodeURIComponent(location);
-        const url = `https://api.countapi.xyz/hit/${COUNTAPI_CONFIG.namespace}/${locationKey}`;
-        console.log('Location API URL:', url);
+        // 使用全球统计API记录地区访问
+        const locationKey = `location-${location.replace(/\s+/g, '-').toLowerCase()}`;
+        const response = await fetch(`https://api.countapi.xyz/hit/${GLOBAL_STATS_CONFIG.siteId}/${locationKey}`, {
+            method: 'GET',
+            mode: 'cors'
+        });
         
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        console.log('✅ 地区统计响应:', data);
-        visitStats.locations[location] = data.value || 1;
-        updateLocationList();
+        if (response.ok) {
+            const data = await response.json();
+            console.log(`✅ 地区 ${location} 访问计数成功:`, data.value);
+            visitStats.locations[location] = data.value;
+        } else {
+            throw new Error('地区统计API响应失败');
+        }
     } catch (error) {
-        console.error('❌ 更新地区统计失败:', error);
-        // 降级到本地存储
-        visitStats.locations[location] = (visitStats.locations[location] || 0) + 1;
-        saveLocalLocationData();
-        updateLocationList();
+        console.error('❌ 记录地区访问失败，使用本地模式:', error);
+        // 降级到本地统计
+        updateLocationVisitCountLocal(location);
     }
+    
+    // 保存已知地区
+    saveKnownLocation(location);
+    
+    // 更新显示
+    updateLocationList();
 }
 
-// 加载地区统计数据（获取前5个地区）
-async function loadLocationStats() {
+// 本地地区统计备用方法
+function updateLocationVisitCountLocal(location) {
+    console.log('📱 使用本地地区统计:', location);
+    
+    // 使用本地存储统计地区访问
+    visitStats.locations[location] = (visitStats.locations[location] || 0) + 1;
+    
+    // 保存到本地存储
+    saveLocalVisitData();
+}
+
+// 加载全球地区统计数据
+async function loadGlobalLocationStats() {
     try {
-        // 从本地存储获取已知地区列表
         const knownLocations = getKnownLocations();
+        console.log('📍 加载已知地区的全球统计:', knownLocations);
         
-        for (const location of knownLocations.slice(0, 10)) { // 限制查询数量
-            const locationKey = COUNTAPI_CONFIG.locationPrefix + encodeURIComponent(location);
+        for (const location of knownLocations) {
+            const locationKey = `location-${location.replace(/\s+/g, '-').toLowerCase()}`;
+            
             try {
-                const response = await fetch(`https://api.countapi.xyz/get/${COUNTAPI_CONFIG.namespace}/${locationKey}`);
-                const data = await response.json();
-                if (data.value > 0) {
-                    visitStats.locations[location] = data.value;
+                const response = await fetch(`https://api.countapi.xyz/get/${GLOBAL_STATS_CONFIG.siteId}/${locationKey}`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    visitStats.locations[location] = data.value || 0;
                 }
             } catch (error) {
-                console.log(`获取地区 ${location} 统计失败:`, error);
+                console.error(`❌ 加载地区 ${location} 统计失败:`, error);
+                // 保持现有的本地数据
             }
         }
+        
+        console.log('📈 地区统计数据加载完成:', visitStats.locations);
         updateLocationList();
+        
     } catch (error) {
-        console.log('加载地区统计失败:', error);
+        console.error('❌ 加载全球地区统计失败:', error);
+        // 使用本地数据
+        loadLocalLocationData();
     }
 }
 
@@ -440,7 +664,7 @@ function saveKnownLocation(location) {
     }
 }
 
-// 降级方案：本地存储
+// 从本地存储加载访问数据
 function loadLocalVisitData() {
     const savedData = localStorage.getItem('visitStatsData');
     if (savedData) {
@@ -450,20 +674,15 @@ function loadLocalVisitData() {
         visitStats.locations = data.locations || {};
         visitStats.lastVisitDate = data.lastVisitDate;
     }
-    
-    // 本地计数逻辑
-    const today = new Date().toDateString();
-    visitStats.totalVisits++;
-    
-    if (visitStats.lastVisitDate !== today) {
-        visitStats.todayVisits = 1;
-        visitStats.lastVisitDate = today;
-    } else {
-        visitStats.todayVisits++;
+}
+
+// 加载本地地区数据
+function loadLocalLocationData() {
+    const savedData = localStorage.getItem('locationStatsData');
+    if (savedData) {
+        visitStats.locations = JSON.parse(savedData);
+        updateLocationList();
     }
-    
-    saveLocalVisitData();
-    updateStatsDisplay();
 }
 
 // 保存本地访问数据

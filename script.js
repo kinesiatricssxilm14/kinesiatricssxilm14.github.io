@@ -341,12 +341,18 @@ function initVisitStats() {
 // 更新全球访问计数
 async function updateGlobalVisitCount() {
     try {
-        const response = await fetch(`https://api.countapi.xyz/hit/${COUNTAPI_CONFIG.namespace}/${COUNTAPI_CONFIG.key}`);
+        console.log('🌍 正在获取全球访问统计...');
+        const url = `https://api.countapi.xyz/hit/${COUNTAPI_CONFIG.namespace}/${COUNTAPI_CONFIG.key}`;
+        console.log('API URL:', url);
+        
+        const response = await fetch(url);
         const data = await response.json();
+        
+        console.log('✅ 全球访问统计响应:', data);
         visitStats.totalVisits = data.value || 0;
         updateStatsDisplay();
     } catch (error) {
-        console.log('获取全球访问统计失败:', error);
+        console.error('❌ 获取全球访问统计失败:', error);
         // 降级到本地存储
         loadLocalVisitData();
     }
@@ -355,12 +361,18 @@ async function updateGlobalVisitCount() {
 // 更新今日访问计数
 async function updateTodayVisitCount() {
     try {
-        const response = await fetch(`https://api.countapi.xyz/hit/${COUNTAPI_CONFIG.namespace}/${COUNTAPI_CONFIG.todayKey}`);
+        console.log('📅 正在获取今日访问统计...');
+        const url = `https://api.countapi.xyz/hit/${COUNTAPI_CONFIG.namespace}/${COUNTAPI_CONFIG.todayKey}`;
+        console.log('Today API URL:', url);
+        
+        const response = await fetch(url);
         const data = await response.json();
+        
+        console.log('✅ 今日访问统计响应:', data);
         visitStats.todayVisits = data.value || 0;
         updateStatsDisplay();
     } catch (error) {
-        console.log('获取今日访问统计失败:', error);
+        console.error('❌ 获取今日访问统计失败:', error);
     }
 }
 
@@ -369,14 +381,19 @@ async function updateLocationVisitCount(location) {
     if (!location) return;
     
     try {
+        console.log('🌏 正在更新地区统计:', location);
         const locationKey = COUNTAPI_CONFIG.locationPrefix + encodeURIComponent(location);
-        const response = await fetch(`https://api.countapi.xyz/hit/${COUNTAPI_CONFIG.namespace}/${locationKey}`);
+        const url = `https://api.countapi.xyz/hit/${COUNTAPI_CONFIG.namespace}/${locationKey}`;
+        console.log('Location API URL:', url);
+        
+        const response = await fetch(url);
         const data = await response.json();
         
+        console.log('✅ 地区统计响应:', data);
         visitStats.locations[location] = data.value || 1;
         updateLocationList();
     } catch (error) {
-        console.log('更新地区统计失败:', error);
+        console.error('❌ 更新地区统计失败:', error);
         // 降级到本地存储
         visitStats.locations[location] = (visitStats.locations[location] || 0) + 1;
         saveLocalLocationData();

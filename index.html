@@ -519,14 +519,73 @@
             </div>
         </div>
     </div>
-
+    
     <!-- 页脚 -->
     <footer>
         <div class="container">
+            <!-- 建站时间显示 -->
+            <div class="site-stats">
+                <span id="sitetime"></span>
+            </div>
+            
+            <!-- 不蒜子统计 -->
+            <div class="visitor-stats">
+                <span id="busuanzi_container_site_uv">
+                    👤总访客数 <span id="busuanzi_value_site_uv"></span> |
+                </span>
+                <span id="busuanzi_container_site_pv">
+                    👁️总浏览量 <span id="busuanzi_value_site_pv"></span>
+                </span>
+            </div>
+            
+            <!-- 访问地图 -->
+            <div class="visitor-map">
+                <script type="text/javascript" id="mapmyvisitors" src="//mapmyvisitors.com/map.js?d=Th3z3scpZxp7wRHqgH2y3juYt433kgvLx5Cd4_AsQT4&cl=ffffff&w=a"></script>
+            </div>
+            
             <p>&copy; 2025 This page is produced using TRAE IDE.</p>
         </div>
     </footer>
 
+    <!-- 不蒜子统计脚本 -->
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- 建站时间脚本 -->
+    <script language="javascript">
+        function siteTime(){
+            window.setTimeout("siteTime()", 1000);
+            var seconds = 1000;
+            var minutes = seconds * 60;
+            var hours = minutes * 60;
+            var days = hours * 24;
+            var years = days * 365;
+            var today = new Date();
+            var todayYear = today.getFullYear();
+            var todayMonth = today.getMonth()+1;
+            var todayDate = today.getDate();
+            var todayHour = today.getHours();
+            var todayMinute = today.getMinutes();
+            var todaySecond = today.getSeconds();
+            // 建站时间设置为2025年1月1日
+            var t1 = Date.UTC(2025,0,1,0,0,0);
+            var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+            var diff = t2-t1;
+            var diffYears = Math.floor(diff/years);
+            var diffDays = Math.floor((diff/days)-diffYears*365);
+            var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+            var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+            var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+            
+            var timeText = "🕓 网站已运行 ";
+            if(diffYears > 0) timeText += diffYears + " 年 ";
+            if(diffDays > 0) timeText += diffDays + " 天 ";
+            timeText += diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+            
+            document.getElementById("sitetime").innerHTML = timeText;
+        }
+        siteTime();
+    </script>
+    
     <script src="script.js"></script>
 </body>
 </html>

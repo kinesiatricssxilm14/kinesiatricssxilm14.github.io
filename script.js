@@ -333,38 +333,57 @@ function initVisitStats() {
     // 获取用户位置信息
     getUserLocation();
     
-    // 使用真正的全球统计服务
-    initGlobalVisitStats();
+    // 初始化访问统计
+    initVisitStats();
 }
 
-// 初始化全球访问统计时也要加载地区数据
-async function initGlobalVisitStats() {
-    console.log('📊 连接全球访问统计服务...');
+// 初始化访问统计
+function initVisitStats() {
+    console.log('📊 初始化访问统计系统...');
     
-    try {
-        // 记录总访问量
-        await recordGlobalVisit();
-        
-        // 记录今日访问量
-        await recordDailyVisit();
-        
-        // 获取并显示统计数据
-        await loadGlobalStats();
-        
-        // 加载地区统计数据
-        await loadGlobalLocationStats();
-        
-        // 更新显示
-        updateStatsDisplay();
-        
-    } catch (error) {
-        console.error('❌ 全球统计服务连接失败，使用本地模式:', error);
-        // 降级到本地统计
-        initLocalFallbackStats();
-    }
+    // 不蒜子统计会自动加载，无需额外初始化
+    // 只需要初始化建站时间显示
+    initSiteTime();
+    
+    // 加载本地位置数据
+    loadLocalLocationData();
 }
 
-// 记录全球访问
+// 建站时间显示功能
+function initSiteTime() {
+    function siteTime() {
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth() + 1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+        
+        // 建站时间：2025年10月25日 (注意月份从0开始，所以9表示10月)
+        var t1 = Date.UTC(2025, 9, 25, 0, 0, 0);
+        var t2 = Date.UTC(todayYear, todayMonth - 1, todayDate, todayHour, todayMinute, todaySecond);
+        var diff = t2 - t1;
+        
+        var diffYears = Math.floor(diff / years);
+        var diffDays = Math.floor((diff / days) - diffYears * 365);
+        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+        
+        const siteTimeElement = document.getElementById("sitetime");
+        if (siteTimeElement) {
+            siteTimeElement.innerHTML = "🕓 网站已运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 小时 " + diffMinutes + " 分 " + diffSeconds + " 秒";
+        }
+    }
+    siteTime();
+}
 async function recordGlobalVisit() {
     try {
         // 使用免费的计数API服务
@@ -549,104 +568,54 @@ function generateVisitId() {
 
 // 纯本地模式
 function useLocalOnlyMode() {
-    console.log('📱 使用纯本地统计模式...');
+    console.log('🏠 使用纯本地统计模式...');
     
-    const today = new Date().toDateString();
+    // 简单的本地计数
+    let totalVisits = parseInt(localStorage.getItem('local-total-visits') || '0');
+    const today = new Date().toISOString().split('T')[0];
+    let todayVisits = parseInt(localStorage.getItem(`local-daily-visits-${today}`) || '0');
     
-    // 检查是否是今天第一次访问
-    if (visitStats.lastVisitDate !== today) {
-        visitStats.todayVisits = 1;
-        visitStats.lastVisitDate = today;
-    } else {
-        visitStats.todayVisits++;
+    // 检查是否是今天的新访问
+    const lastVisitDate = localStorage.getItem('last-visit-date');
+    const sessionVisited = sessionStorage.getItem('session-visited');
+    
+    if (!sessionVisited) {
+        totalVisits++;
+        localStorage.setItem('local-total-visits', totalVisits.toString());
+        sessionStorage.setItem('session-visited', 'true');
+        
+        if (lastVisitDate !== today) {
+            todayVisits = 1; // 今天第一次访问
+        } else {
+            todayVisits++;
+        }
+        localStorage.setItem(`local-daily-visits-${today}`, todayVisits.toString());
+        localStorage.setItem('last-visit-date', today);
     }
     
-    // 总访问量增加
-    visitStats.totalVisits++;
+    visitStats.totalVisits = totalVisits;
+    visitStats.todayVisits = todayVisits;
     
-    // 保存到本地存储
-    saveLocalVisitData();
     updateStatsDisplay();
 }
 
-// 更新地区访问统计（全球版本）
-async function updateLocationVisitCount(location) {
+// 简化的位置访问统计（仅本地）
+function updateLocationVisitCount(location) {
     if (!location) return;
     
-    console.log('🌏 更新地区统计 (全球模式):', location);
-    
-    try {
-        // 使用全球统计API记录地区访问
-        const locationKey = `location-${location.replace(/\s+/g, '-').toLowerCase()}`;
-        const response = await fetch(`https://api.countapi.xyz/hit/${GLOBAL_STATS_CONFIG.siteId}/${locationKey}`, {
-            method: 'GET',
-            mode: 'cors'
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            console.log(`✅ 地区 ${location} 访问计数成功:`, data.value);
-            visitStats.locations[location] = data.value;
-        } else {
-            throw new Error('地区统计API响应失败');
-        }
-    } catch (error) {
-        console.error('❌ 记录地区访问失败，使用本地模式:', error);
-        // 降级到本地统计
-        updateLocationVisitCountLocal(location);
-    }
-    
-    // 保存已知地区
-    saveKnownLocation(location);
-    
-    // 更新显示
-    updateLocationList();
-}
-
-// 本地地区统计备用方法
-function updateLocationVisitCountLocal(location) {
-    console.log('📱 使用本地地区统计:', location);
+    console.log('🌏 更新地区统计 (本地模式):', location);
     
     // 使用本地存储统计地区访问
     visitStats.locations[location] = (visitStats.locations[location] || 0) + 1;
     
+    // 保存已知地区
+    saveKnownLocation(location);
+    
     // 保存到本地存储
     saveLocalVisitData();
-}
-
-// 加载全球地区统计数据
-async function loadGlobalLocationStats() {
-    try {
-        const knownLocations = getKnownLocations();
-        console.log('📍 加载已知地区的全球统计:', knownLocations);
-        
-        for (const location of knownLocations) {
-            const locationKey = `location-${location.replace(/\s+/g, '-').toLowerCase()}`;
-            
-            try {
-                const response = await fetch(`https://api.countapi.xyz/get/${GLOBAL_STATS_CONFIG.siteId}/${locationKey}`, {
-                    method: 'GET',
-                    mode: 'cors'
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    visitStats.locations[location] = data.value || 0;
-                }
-            } catch (error) {
-                console.error(`❌ 加载地区 ${location} 统计失败:`, error);
-                // 保持现有的本地数据
-            }
-        }
-        
-        console.log('📈 地区统计数据加载完成:', visitStats.locations);
-        updateLocationList();
-        
-    } catch (error) {
-        console.error('❌ 加载全球地区统计失败:', error);
-        // 使用本地数据
-        loadLocalLocationData();
-    }
+    
+    // 更新显示
+    updateLocationList();
 }
 
 // 获取已知地区列表
@@ -813,8 +782,66 @@ function updateStatsVisibility() {
     
     if (isAdmin()) {
         statsContainer.style.display = 'block';
+        // 显示管理员面板信息
+        showAdminPanel();
     } else {
         statsContainer.style.display = 'none';
+        // 隐藏管理员面板
+        hideAdminPanel();
+    }
+}
+
+// 显示管理员面板
+function showAdminPanel() {
+    // 创建或更新管理员面板
+    let adminPanel = document.getElementById('adminPanel');
+    if (!adminPanel) {
+        adminPanel = document.createElement('div');
+        adminPanel.id = 'adminPanel';
+        adminPanel.className = 'admin-panel';
+        document.body.appendChild(adminPanel);
+    }
+    
+    // 获取不蒜子统计数据
+    const busuanziUV = document.getElementById('busuanzi_value_site_uv')?.textContent || '加载中...';
+    const busuanziPV = document.getElementById('busuanzi_value_site_pv')?.textContent || '加载中...';
+    
+    // 获取本地地区统计
+    const locationStats = Object.entries(visitStats.locations)
+        .map(([location, count]) => `${location}: ${count}次`)
+        .join('<br>') || '暂无地区数据';
+    
+    adminPanel.innerHTML = `
+        <div class="admin-panel-header">
+            <h3>📊 管理员统计面板</h3>
+            <button onclick="adminLogout()" class="admin-close-btn">×</button>
+        </div>
+        <div class="admin-panel-content">
+            <div class="stats-section">
+                <h4>🌐 不蒜子全球统计</h4>
+                <p>总访客数: ${busuanziUV}</p>
+                <p>总浏览量: ${busuanziPV}</p>
+            </div>
+            <div class="stats-section">
+                <h4>📍 地区访问统计 (本地)</h4>
+                <div class="location-stats">${locationStats}</div>
+            </div>
+            <div class="stats-section">
+                <h4>🕐 网站信息</h4>
+                <p>建站时间: 2025年10月25日</p>
+                <p>统计方式: 不蒜子 + 本地地区统计</p>
+            </div>
+        </div>
+    `;
+    
+    adminPanel.style.display = 'block';
+}
+
+// 隐藏管理员面板
+function hideAdminPanel() {
+    const adminPanel = document.getElementById('adminPanel');
+    if (adminPanel) {
+        adminPanel.style.display = 'none';
     }
 }
 

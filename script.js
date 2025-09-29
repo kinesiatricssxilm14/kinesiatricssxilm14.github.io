@@ -828,7 +828,7 @@ function showAdminPanel() {
             </div>
             <div class="stats-section">
                 <h4>🕐 网站信息</h4>
-                <p>建站时间: 2025年10月25日</p>
+                <p>建站时间: 2025年10月29日</p>
                 <p>统计方式: 不蒜子 + 本地地区统计</p>
             </div>
         </div>

@@ -27,10 +27,9 @@
                     <li><a href="#about">About</a></li>
                     <li><a href="#education">Education</a></li>
                     <li><a href="#publications">Publications</a></li>
-                    <li><a href="#activities">Activities</a></li>
-                    <li><a href="#experiences">Experiences</a></li>
+                    <li><a href="#activities">Internships</a></li>
                     <li><a href="#services">Services</a></li>
-                    <li><a href="#honors">Awards</a></li>
+                    <li><a href="#honors">Honors</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
@@ -48,6 +47,13 @@
                             <img src="about_image/photo.jpg" alt="Portrait of Ruida Hu" class="avatar-image">
                             <span class="avatar-caption">At Xu Song's concert<span class="avatar-caption-date">Aug 23, 2026</span></span>
                         </div>
+                        <p class="life-motto">Stay passionate about life, always. ✨</p>
+                        <div class="social-links">
+                            <a href="mailto:200111107@stu.hit.edu.cn" title="Email"><i class="fas fa-envelope"></i></a>
+                            <a href="https://scholar.google.com/citations?user=DQtBFXsAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
+                            <a href="https://orcid.org/my-orcid?orcid=0009-0000-9221-2788" target="_blank" title="ORCID"><i class="fab fa-orcid"></i></a>
+                            <a href="https://github.com/kinesiatricssxilm14" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                        </div>
                     </div>
                     <div class="profile-content">
                         <h2 class="section-title">
@@ -58,13 +64,6 @@
                         <p>My research focuses on <strong>Software Engineering</strong>, <strong>LLM Agents</strong>, and <strong>AI Coding</strong>. I am excited to explore AI Coding at every level—from models and agents to benchmarks, tools, and developer workflows—and warmly welcome research collaborations.</p>
                         <p>Concurrently, I am participating in the <strong>Rhino-Bird Elite Talent Program</strong> at <strong>WeChat Pay, Tencent WXG</strong>, working on agent-related tasks.</p>
                         <p>My MBTI type is <strong>ENFP</strong>.🐕</p>
-                        <p class="life-motto">Stay passionate about life, always. ✨</p>
-                        <div class="social-links">
-                            <a href="mailto:200111107@stu.hit.edu.cn" title="Email"><i class="fas fa-envelope"></i></a>
-                            <a href="https://scholar.google.com/citations?user=DQtBFXsAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
-                            <a href="https://orcid.org/my-orcid?orcid=0009-0000-9221-2788" target="_blank" title="ORCID"><i class="fab fa-orcid"></i></a>
-                            <a href="https://github.com/kinesiatricssxilm14" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -79,6 +78,7 @@
                 </h2>
                 <div class="education-grid">
                     <div class="education-card">
+                        <img src="education_image/hitsz-emblem.svg" alt="Harbin Institute of Technology emblem" class="education-emblem">
                         <h3 class="education-degree">Ph.D. (Direct Track)</h3>
                         <p class="education-institution">Harbin Institute of Technology, Shenzhen</p>
                         <p class="education-period">2026.09 - 2029.06 (Expected)</p>
@@ -86,6 +86,7 @@
                     </div>
 
                     <div class="education-card">
+                        <img src="education_image/hitsz-emblem.svg" alt="Harbin Institute of Technology emblem" class="education-emblem">
                         <h3 class="education-degree">Master</h3>
                         <p class="education-institution">Harbin Institute of Technology, Shenzhen</p>
                         <p class="education-period">2024.09 - 2026.08</p>
@@ -93,6 +94,7 @@
                     </div>
 
                     <div class="education-card">
+                        <img src="education_image/hitsz-emblem.svg" alt="Harbin Institute of Technology emblem" class="education-emblem">
                         <h3 class="education-degree">Bachelor</h3>
                         <p class="education-institution">Harbin Institute of Technology, Shenzhen</p>
                         <p class="education-period">2020.09 - 2024.06</p>
@@ -100,12 +102,14 @@
                     </div>
                     
                     <div class="education-card">
+                        <img src="education_image/changsha-first-high-school.png" alt="The First High School of Changsha emblem" class="education-emblem" data-crop="left">
                         <h3 class="education-degree">Senior High School</h3>
                         <p class="education-institution">The First High School of Changsha, Hunan</p>
                         <p class="education-period">2017.09 - 2020.07</p>
                     </div>
 
                     <div class="education-card">
+                        <img src="education_image/qingzhuhu-xiangyi.png" alt="Qingzhuhu Xiangyi Foreign Language School emblem" class="education-emblem">
                         <h3 class="education-degree">Middle School</h3>
                         <p class="education-institution">Qingzhuhu Xiangyi Foreign Language School</p>
                         <p class="education-period">2014.09 - 2017.06</p>
@@ -121,7 +125,10 @@
                     <span class="section-icon">📚</span>
                     Publications
                 </h2>
-                <p class="co-first-author-note">#Co-first author  *Corresponding author</p>
+                <div class="author-legend" aria-label="Author contribution legend">
+                    <span><strong>#</strong> Co-first author</span>
+                    <span><strong>*</strong> Corresponding author</span>
+                </div>
                 <h3 class="publication-category">First-Author Papers</h3>
                 <div class="publications-list">
                     <article class="publication-card" onclick="openPaperModal('tui-testing')">
@@ -150,7 +157,7 @@
                                 <span class="ccf-badge preprint">Preprint</span>
                                 <h3 class="publication-title">Evaluating LLM-Based 0-to-1 Software Generation in End-to-End CLI Tool Scenarios</h3>
                             </div>
-                            <p class="publication-authors"><strong>Ruida Hu</strong>, Xinchen Wang, Chao Peng, Cuiyun Gao, David Lo<span class="corresponding-author">*</span></p>
+                            <p class="publication-authors"><strong>Ruida Hu</strong>, Xinchen Wang, Chao Peng, Cuiyun Gao<span class="corresponding-author">*</span>, David Lo</p>
                             <p class="publication-venue">arXiv preprint, 2026</p>
                             <div class="publication-links">
                                 <a href="https://arxiv.org/pdf/2604.06742" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
@@ -165,12 +172,12 @@
                         <div class="paper-content">
                             <div class="paper-header">
                                 <span class="ccf-badge ccf-a">CCF-A</span>
-                                <span class="ccf-badge venue-badge">FSE 2025</span>
+                                <span class="ccf-badge venue-badge">FSE 2026</span>
                                 <h3 class="publication-title">Benchmarking LLMs for Fine-Grained Code Review with Enriched Context in Practice</h3>
                             </div>
                             <p class="publication-authors"><strong>Ruida Hu</strong>, Xinchen Wang, Xin-Cheng Wen, Zhao Zhang, Bo Jiang, Pengfei Gao, Chao Peng<span class="corresponding-author">*</span>, Cuiyun Gao<span class="corresponding-author">*</span></p>
 
-                            <p class="publication-venue">33rd ACM International Conference on the Foundations of Software Engineering (FSE 2025 Industry Track)</p>
+                            <p class="publication-venue">34th ACM International Conference on the Foundations of Software Engineering (FSE 2026 Industry Track)</p>
                             <div class="publication-links">
                                 <a href="https://arxiv.org/pdf/2511.07017" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
                                 <a href="https://github.com/kinesiatricssxilm14/ContextCRBench" class="btn btn-small" onclick="event.stopPropagation()">Code</a>
@@ -271,7 +278,7 @@
                                 <span class="ccf-badge preprint">Preprint</span>
                                 <h3 class="publication-title">Evaluating Repository-level Software Documentation via Question Answering and Feature-Driven Development</h3>
                             </div>
-                            <p class="publication-authors">Xinchen Wang, <strong>Ruida Hu</strong>, Cuiyun Gao<span class="corresponding-author">*</span>, Pengfei Gao, Chao Peng<span class="corresponding-author">*</span></p>
+                            <p class="publication-authors">Xinchen Wang, <strong>Ruida Hu</strong>, Cuiyun Gao, Pengfei Gao, Chao Peng</p>
                             <p class="publication-venue">arXiv preprint, 2026</p>
                             <div class="publication-links">
                                 <a href="https://arxiv.org/pdf/2604.06793" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
@@ -289,7 +296,7 @@
                                 <h3 class="publication-title">SR-Eval: Evaluating LLMs on Code Generation under Stepwise Requirement Refinement</h3>
                             </div>
                             <p class="publication-authors">Zexun Zhan, Shuzheng Gao, <strong>Ruida Hu</strong>, Cuiyun Gao</p>
-                            <p class="publication-venue">arXiv preprint, 2026</p>
+                            <p class="publication-venue">arXiv preprint, 2025</p>
                             <div class="publication-links">
                                 <a href="https://arxiv.org/pdf/2509.18808" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
                             </div>
@@ -325,7 +332,7 @@
                                 <span class="ccf-badge venue-badge">ASE 2025</span>
                                 <h3 class="publication-title">An Agent-based Framework for Evaluating Large Language Models in Code Generation</h3>
                             </div>
-                            <p class="publication-authors">Xinchen Wang, Pengfei Gao, Chao Peng, <strong>Ruida Hu</strong>, Cuiyun Gao</p>
+                            <p class="publication-authors">Xinchen Wang, <strong>Ruida Hu</strong>, Pengfei Gao, Chao Peng, Cuiyun Gao</p>
                             <p class="publication-venue">40th IEEE/ACM International Conference on Automated Software Engineering (ASE 2025)</p>
                             <div class="publication-links">
                                 <a href="https://arxiv.org/pdf/2504.13472" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
@@ -376,11 +383,11 @@
                         <div class="paper-content">
                             <div class="paper-header">
                                 <span class="ccf-badge ccf-a">CCF-A</span>
-                                <span class="ccf-badge journal-badge">TSE 2025</span>
+                                <span class="ccf-badge journal-badge">TSE 2026</span>
                                 <h3 class="publication-title">From Function to Repository: Towards Repository-Level Evaluation of Software Vulnerability Detection</h3>
                             </div>
                             <p class="publication-authors">Xin-Cheng Wen, Xinchen Wang, Yujia Chen, <strong>Ruida Hu</strong>, David Lo, Cuiyun Gao</p>
-                            <p class="publication-venue">TSE 2025</p>
+                            <p class="publication-venue">TSE 2026</p>
                             <div class="publication-links">
                                 <a href="https://arxiv.org/pdf/2404.15596" class="btn btn-small" onclick="event.stopPropagation()">PDF</a>
                             </div>
@@ -411,14 +418,16 @@
             </div>
         </section>
 
-        <!-- Activities -->
+        <!-- Internships and experiences -->
         <section id="activities" class="section">
             <div class="container">
-                <h2 class="section-title">
-                    <span class="section-icon">🚀</span>
-                    Activities
-                </h2>
-                <div class="activities-list">
+                <div class="engagements-grid">
+                    <div class="engagement-group internship-group">
+                        <h2 class="section-title">
+                            <span class="section-icon">💼</span>
+                            Internships
+                        </h2>
+                        <div class="activities-list">
                     <article class="activity-item">
                         <div class="activity-image">
                             <img src="activity_image/wechat-pay.svg" alt="WeChat Pay" class="activity-logo wechat-pay-logo">
@@ -432,7 +441,7 @@
 
                     <article class="activity-item">
                         <div class="activity-image">
-                            <img src="activity_image/trae-ai-logo.jpeg" alt="Trae AI" class="activity-logo">
+                            <img src="activity_image/trae-icon.svg" alt="TRAE" class="activity-logo trae-logo">
                         </div>
                         <div class="activity-content">
                             <h3 class="activity-title">Intern at Trae AI group in ByteDance Ltd.</h3>
@@ -440,18 +449,15 @@
                             <p class="activity-description">I worked on AI for SE and benchmark for code tasks, and worked with Chao Peng and Pengfei Gao.</p>
                         </div>
                     </article>
-                </div>
-            </div>
-        </section>
+                        </div>
+                    </div>
 
-        <!-- Experiences -->
-        <section id="experiences" class="section">
-            <div class="container">
-                <h2 class="section-title">
-                    <span class="section-icon">💼</span>
-                    Experiences
-                </h2>
-                <div class="experiences-list">
+                    <div id="experiences" class="engagement-group experience-group">
+                        <h2 class="section-title">
+                            <span class="section-icon">🌍</span>
+                            Experiences
+                        </h2>
+                        <div class="experiences-list">
                     <article class="experience-item">
                         <div class="experience-icon">
                             <img src="activity_image/chinasoft-2025.png" alt="ChinaSoft 2025" class="conference-logo">
@@ -476,7 +482,7 @@
 
                     <article class="experience-item">
                         <div class="experience-icon">
-                            <img src="activity_image/internetware-2024-logo.png" alt="Internetware 2024" class="conference-logo" data-conference="internetware2024">
+                            <img src="activity_image/internetware-2024.svg" alt="Internetware 2024" class="conference-logo" data-conference="internetware2024">
                         </div>
                         <div class="experience-content">
                             <h3 class="experience-title">Internetware 2024</h3>
@@ -495,6 +501,8 @@
                             <p class="experience-period">April 2024</p>
                         </div>
                     </article>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -508,13 +516,25 @@
                 </h2>
                 <div class="services-card">
                     <div class="service-row">
-                        <span class="service-label">Journal Reviewer</span>
+                        <div class="service-heading">
+                            <span class="service-icon"><i class="fas fa-book-open"></i></span>
+                            <div>
+                                <span class="service-label">Journal Reviewer</span>
+                                <span class="service-description">Peer review for leading journals</span>
+                            </div>
+                        </div>
                         <div class="service-tags">
                             <span>TSE</span><span>TOSEM</span><span>EMSE</span><span>KBS</span><span>IEEE Access</span>
                         </div>
                     </div>
                     <div class="service-row">
-                        <span class="service-label">Conference Reviewer</span>
+                        <div class="service-heading">
+                            <span class="service-icon"><i class="fas fa-users"></i></span>
+                            <div>
+                                <span class="service-label">Conference Reviewer</span>
+                                <span class="service-description">Program committee and artifact evaluation</span>
+                            </div>
+                        </div>
                         <div class="service-tags">
                             <span>NeurIPS 2026</span><span>ISSTA 2027 AE</span><span>ASE 2027 AE</span>
                         </div>
@@ -625,7 +645,20 @@
                     Get In Touch
                 </h2>
                 <div class="contact-content">
-                    <p class="email">200111107@stu.hit.edu.cn OR buotte@qq.com</p>
+                    <a class="email-card" href="mailto:200111107@stu.hit.edu.cn">
+                        <span class="email-icon"><i class="fas fa-envelope"></i></span>
+                        <span class="email-copy">
+                            <span class="email-label">HIT Email</span>
+                            <span class="email-address">200111107@stu.hit.edu.cn</span>
+                        </span>
+                    </a>
+                    <a class="email-card" href="mailto:buotte@qq.com">
+                        <span class="email-icon"><i class="fas fa-paper-plane"></i></span>
+                        <span class="email-copy">
+                            <span class="email-label">Personal Email</span>
+                            <span class="email-address">buotte@qq.com</span>
+                        </span>
+                    </a>
                 </div>
             </div>
         </section>

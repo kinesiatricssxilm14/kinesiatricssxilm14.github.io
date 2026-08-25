@@ -56,6 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    sortPublicationsByDate();
     
     document.querySelectorAll('[data-expand-group]').forEach(button => {
         button.addEventListener('click', function() {
@@ -98,45 +100,153 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+const publicationDates = {
+    'tui-testing': '2026-08-05',
+    'cli-tool-bench': '2026-04-09',
+    'swd-bench': '2026-04-09',
+    'vuleval': '2026-02-23',
+    'repo2run': '2025-12-02',
+    'codevisionary': '2025-11-16',
+    'repomastereval': '2025-11-16',
+    'sr-eval': '2025-09-24',
+    'coderepoqa': '2025-07-13',
+    'trae-agent': '2025-07-31',
+    'contextcrbench': '2026-07-05',
+    'aegis': '2025-06-23',
+    'faun-eval': '2024-11-27',
+    'reposvul': '2024-04-14',
+    'pyconf': '2024-04-14'
+};
+
+function sortPublicationsByDate() {
+    document.querySelectorAll('.publication-category').forEach((heading, categoryIndex) => {
+        const group = categoryIndex === 0 ? 'first-author' : 'collaborative';
+        const lists = [];
+        let sibling = heading.nextElementSibling;
+
+        while (sibling && !sibling.matches('[data-expand-group]')) {
+            if (sibling.classList.contains('publications-list')) {
+                lists.push(sibling);
+            }
+            sibling = sibling.nextElementSibling;
+        }
+
+        if (!lists.length) return;
+
+        lists[0].classList.add(`publications-list-${group}`);
+        const cards = lists.flatMap(list => [...list.querySelectorAll('.publication-card')]);
+        const getId = card => card.getAttribute('onclick')?.match(/'([^']+)'/)?.[1] || '';
+
+        cards.forEach(card => {
+            const date = publicationDates[getId(card)];
+            const title = card.querySelector('.publication-title');
+            if (!date || !title || card.querySelector('.publication-date')) return;
+
+            const time = document.createElement('time');
+            time.className = 'publication-date';
+            time.dateTime = date;
+            time.textContent = date.slice(0, 7).replace('-', '.');
+            time.title = card.querySelector('.preprint')
+                ? 'arXiv submission date'
+                : 'Official publication or conference date';
+            title.before(time);
+        });
+
+        cards.sort((first, second) => {
+            return (publicationDates[getId(second)] || '').localeCompare(publicationDates[getId(first)] || '');
+        });
+
+        cards.forEach((card, index) => {
+            const isExtra = index >= 2;
+            card.classList.toggle('publication-extra', isExtra);
+
+            if (isExtra) {
+                card.dataset.publicationGroup = group;
+            } else {
+                delete card.dataset.publicationGroup;
+            }
+
+            lists[0].appendChild(card);
+        });
+
+        lists.slice(1).forEach(list => list.remove());
+    });
+}
+
 function openInfoModal(card) {
     const modalContent = document.getElementById('modalContent');
-    const image = card.querySelector('.activity-logo, .conference-logo');
+    const modalPanel = modalContent.closest('.modal-content');
+    const image = card.querySelector('.education-emblem, .activity-logo, .conference-logo');
     let title = '';
     let details = [];
 
     if (card.classList.contains('education-card')) {
+        modalPanel.dataset.modalType = 'education';
         title = card.querySelector('.education-degree')?.textContent || 'Education';
         details = [...card.querySelectorAll('p')].map(item => item.textContent);
     } else if (card.classList.contains('activity-item')) {
+        modalPanel.dataset.modalType = 'activity';
         title = card.querySelector('.activity-title')?.textContent || 'Activity';
         details = [...card.querySelectorAll('.activity-period, .activity-description')].map(item => item.textContent);
     } else if (card.classList.contains('experience-item')) {
+        modalPanel.dataset.modalType = 'experience';
         title = card.querySelector('.experience-title')?.textContent || 'Experience';
         details = [...card.querySelectorAll('.experience-location, .experience-period')].map(item => item.textContent);
     } else {
+        modalPanel.dataset.modalType = 'honor';
         title = card.querySelector('.honor-title')?.textContent || 'Honor';
         details = [card.querySelector('.honor-details')?.textContent].filter(Boolean);
     }
 
     modalContent.innerHTML = '';
+    const isEducation = card.classList.contains('education-card');
+    const usesSideLogo = Boolean(image) && (
+        isEducation ||
+        card.classList.contains('activity-item') ||
+        card.classList.contains('experience-item')
+    );
+    const textContainer = document.createElement('div');
+    let modalImage = null;
 
     if (image) {
-        const modalImage = document.createElement('img');
+        modalImage = document.createElement('img');
         modalImage.src = image.src;
         modalImage.alt = image.alt;
         modalImage.className = 'modal-image info-modal-image';
-        modalContent.appendChild(modalImage);
+        if (usesSideLogo) {
+            modalImage.classList.add('info-side-logo');
+        }
+        if (image.classList.contains('education-emblem')) {
+            modalImage.classList.add('education-modal-emblem');
+        }
+        if (image.dataset.crop === 'left') {
+            modalImage.classList.add('education-modal-emblem-crop-left');
+        }
+        if (!usesSideLogo) {
+            modalContent.appendChild(modalImage);
+        }
     }
 
     const heading = document.createElement('h2');
     heading.textContent = title;
-    modalContent.appendChild(heading);
+    textContainer.appendChild(heading);
 
     details.forEach(detail => {
         const paragraph = document.createElement('p');
         paragraph.textContent = detail;
-        modalContent.appendChild(paragraph);
+        textContainer.appendChild(paragraph);
     });
+
+    if (usesSideLogo) {
+        const layout = document.createElement('div');
+        layout.className = 'info-modal-layout';
+        textContainer.className = 'info-modal-copy';
+        layout.appendChild(textContainer);
+        if (modalImage) layout.appendChild(modalImage);
+        modalContent.appendChild(layout);
+    } else {
+        modalContent.appendChild(textContainer);
+    }
 
     document.getElementById('paperModal').style.display = 'block';
     document.body.style.overflow = 'hidden';
@@ -156,7 +266,7 @@ const paperDetails = {
     },
     'cli-tool-bench': {
         title: 'Evaluating LLM-Based 0-to-1 Software Generation in End-to-End CLI Tool Scenarios',
-        authors: 'Ruida Hu, Xinchen Wang, Chao Peng, Cuiyun Gao, David Lo*',
+        authors: 'Ruida Hu, Xinchen Wang, Chao Peng, Cuiyun Gao*, David Lo',
         venue: 'arXiv preprint, 2026',
         abstract: 'The evolution of Large Language Models (LLMs) has catalyzed a paradigm shift towards intent-driven software development, where autonomous agents are expected to design and deliver complete, runnable software systems from scratch. However, existing benchmarks fail to adequately assess this 0-to-1 generation capability because they rely on predefined structural scaffolds and rigid white-box unit testing. We introduce CLI-Tool-Bench, a structure-agnostic benchmark for ground-up generation of command-line tools. Powered by an automated black-box differential testing framework, it comprises 94 high-quality, real-world repositories spanning diverse programming languages and complexity levels. Extensive evaluation of seven state-of-the-art LLMs shows that top-tier models achieve a maximum overall success rate of only 43.8%, highlighting that 0-to-1 software generation remains highly challenging.',
         image: 'paper_image/cli-tool-bench.png',
@@ -176,7 +286,7 @@ const paperDetails = {
     },
     'swd-bench': {
         title: 'Evaluating Repository-level Software Documentation via Question Answering and Feature-Driven Development',
-        authors: 'Xinchen Wang, Ruida Hu, Cuiyun Gao*, Pengfei Gao, Chao Peng*',
+        authors: 'Xinchen Wang, Ruida Hu, Cuiyun Gao, Pengfei Gao, Chao Peng',
         venue: 'arXiv preprint, 2026',
         abstract: 'Software documentation is crucial for repository comprehension, yet existing benchmarks lack repository-level analysis and rely on unreliable evaluation strategies. We propose SWD-Bench, a benchmark that evaluates repository-level software documentation by treating LLMs as repository developers and measuring their ability to understand and implement functionality. SWD-Bench introduces three interconnected tasks: functionality detection, functionality localization, and functionality completion. Its construction pipeline yields 4,170 entries across the three tasks. Experiments highlight limitations in current repository-level documentation generation methods and show that documentation generated by the best-performing method improves SWE-Agent issue-solving performance by 20.00%.',
         image: 'paper_image/swd-bench.png',
@@ -187,7 +297,7 @@ const paperDetails = {
     'sr-eval': {
         title: 'SR-Eval: Evaluating LLMs on Code Generation under Stepwise Requirement Refinement',
         authors: 'Zexun Zhan, Shuzheng Gao, Ruida Hu, Cuiyun Gao',
-        venue: 'arXiv preprint, 2026',
+        venue: 'arXiv preprint, 2025',
         abstract: 'Large language models have made remarkable progress in code generation, but existing benchmarks primarily treat the task as a static, single-turn problem. We present SR-Eval, a benchmark for iterative code generation under stepwise requirement refinement. It spans function- and repository-level tasks in Python and Java and contains 443 multi-turn tasks with 1,857 questions. Evaluation of 11 representative LLMs shows that this scenario remains highly challenging: the best model achieves only a 22.67% completion rate on function-level tasks and 20.00% on repository-level tasks. Prompting strategies also substantially influence performance.',
         image: 'paper_image/sr-eval.png',
         links: [
@@ -240,7 +350,7 @@ const paperDetails = {
     },
     'codevisionary': {
         title: 'An Agent-based Evaluation Framework for Complex Code Generation',
-        authors: 'Xinchen Wang, Pengfei Gao, Chao Peng, Ruida Hu, Cuiyun Gao',
+        authors: 'Xinchen Wang, Ruida Hu, Pengfei Gao, Chao Peng, Cuiyun Gao',
         venue: '40th IEEE/ACM International Conference on Automated Software Engineering (ASE 2025)',
         abstract: 'Large language models (LLMs) have demonstrated strong capabilities in code generation, underscoring the critical need for rigorous and comprehensive evaluation. Existing evaluation approaches fall into three categories, including human-centered, metric-based, and LLM-based. Considering that human-centered approaches are labour-intensive and metric-based ones overly rely on reference answers, LLM-based approaches are gaining increasing attention due to their stronger contextual understanding capabilities and superior efficiency. However, the performance of LLM-based approaches remains limited due to: (1) lack of multisource domain knowledge, and (2) insufficient comprehension of complex code.\nTo mitigate the limitations, we propose CodeVisionary, the first LLM-based agent framework for evaluating LLMs in code generation. CodeVisionary consists of two stages: (1) Multiscore knowledge analysis stage, which aims to gather multisource and comprehensive domain knowledge by formulating and executing a stepwise evaluation plan. (2) Negotiation-based scoring stage, which involves multiple judges engaging in discussions to better comprehend the complex code and reach a consensus on the evaluation score. Extensive experiments demonstrate that CodeVisionary achieves the best performance for evaluating LLMs in code generation, outperforming the best baseline methods with average improvements of 0.202, 0.139, and 0.117 in Pearson, Spearman, and Kendall-Tau coefficients, respectively. Besides, CodeVisionary provides detailed evaluation reports, which assist developers in identifying shortcomings and making improvements. The resources of CodeVisionary are available at https://anonymous.4open.science/r/CodeVisionary.',
         image: 'paper_image/codevisionary.png',
@@ -272,7 +382,7 @@ const paperDetails = {
     'vuleval': {
         title: 'From Function to Repository: Towards Repository-Level Evaluation of Software Vulnerability Detection',
         authors: 'Xin-Cheng Wen, Xinchen Wang, Yujia Chen, Ruida Hu, David Lo, Cuiyun Gao',
-        venue: 'TSE 2025',
+        venue: 'TSE 2026',
         abstract: 'Deep Learning (DL)-based methods have proven to be effective for software vulnerability detection, with a potential for substantial productivity enhancements for detecting vulnerabilities. Current methods mainly focus on detecting single functions (i.e., intra-procedural vulnerabilities), ignoring the more complex inter-procedural vulnerability detection scenarios in practice. For example, developers routinely engage with program analysis to detect vulnerabilities that span multiple functions within repositories. In addition, the widely-used benchmark datasets generally contain only intra-procedural vulnerabilities, leaving the assessment of inter-procedural vulnerability detection capabilities unexplored.\nTo mitigate the issues, we propose a repository-level evaluation system, named \textbf{VulEval}, aiming at evaluating the detection performance of inter- and intra-procedural vulnerabilities simultaneously. Specifically, VulEval consists of three interconnected evaluation tasks: \textbf{(1) Function-Level Vulnerability Detection}, aiming at detecting intra-procedural vulnerability given a code snippet; \textbf{(2) Vulnerability-Related Dependency Prediction}, aiming at retrieving the most relevant dependencies from call graphs for providing developers with explanations about the vulnerabilities; and \textbf{(3) Repository-Level Vulnerability Detection}, aiming at detecting inter-procedural vulnerabilities by combining with the dependencies identified in the second task. VulEval also consists of a large-scale dataset, with a total of 4,196 CVE entries, 232,239 functions, and corresponding 4,699 repository-level source code in C/C++ programming languages. Our analysis highlights the current progress and future directions for software vulnerability detection.',
         image: 'paper_image/vuleval.png',
         links: [
@@ -282,7 +392,7 @@ const paperDetails = {
     'contextcrbench': {
         title: 'Benchmarking LLMs for Fine-Grained Code Review with Enriched Context in Practice',
         authors: 'Ruida Hu, Xinchen Wang, Xin-Cheng Wen, Zhao Zhang, Bo Jiang, Pengfei Gao, Chao Peng*, Cuiyun Gao*',
-        venue: '33rd ACM International Conference on the Foundations of Software Engineering (FSE 2025 Industry Track)',
+        venue: '34th ACM International Conference on the Foundations of Software Engineering (FSE 2026 Industry Track)',
         abstract: 'Code review is a critical practice for ensuring software quality in modern software development, and the recent advancements in Large Language Models (LLMs) have demonstrated efficacy in facilitating automated code review processes. However, existing benchmarks for code review have the following limitations. (1) They lack the rich semantic context. Current benchmarks often provide code changes and fail to incorporate key textual information such as issue descriptions, which are essential for understanding the intent behind a code change. (2) They frequently exhibit data quality issues due to the absence of rigorous validation mechanisms during the curation process. This negligence results in the incorporation of noisy entries, such as reviews on outdated code, ultimately resulting in unreliable model evaluation. (3) Most existing benchmarks operate at a file or commit level, failing to evaluate the fine-grained, line-level analysis essential for precise code understanding. To address the limitations of existing datasets, we present ContextCRBench, a high-quality, context-rich benchmark designed for fine-grained evaluation of LLMs in code review tasks. Our construction pipeline consists of three main modules. First, the Raw Data Crawling module collects over 153.7k issues and PRs from selected top-tier repositories. Next, the Comprehensive Context Extraction module establishes rich context by rigorously linking issue-PR pairs for textual context and extracting the full surrounding function or class for code context. Finally, our Multistage Data Filtering module applies a series of checks to remove entries that are outdated, improperly formatted, or identified as low-value by an LLM-based classifier. This rigorous process yields the final benchmark of 67,910 entries. Each entry in our benchmark is enriched with both textual context and code context. We design our benchmark to support three core evaluation scenarios aligned with the code review lifecycle: (1) hunk-level quality assessment, assessing if a given diff hunk needs further review; (2) line-level defect localization, identifying the specific lines within the diff hunk needed to comment; and (3) line-level review comment generation, generating an actionable comment for an identified code line. Leveraging ContextCRBench, we conduct a comprehensive evaluation of eight popular LLMs, including four leading closedsource and four open-source models. We find that current LLMs still exhibit great limitations in code review, and the textual context often yields greater performance improvements than providing only the surrounding code context. In an industrial application at ByteDance, ContextCRBench serves as the core reward signal for a self-evolving code review tool, guiding it to a 61.98% relative performance improvement. This validates the practical utility and effectiveness of our benchmark in industrial applications.',
         image: 'paper_image/contextcrbench.png',
         links: [
@@ -310,10 +420,15 @@ function openPaperModal(paperId) {
     if (!paper) return;
     
     const modalContent = document.getElementById('modalContent');
+    modalContent.closest('.modal-content').dataset.modalType = 'publication';
+    const formattedAuthors = paper.authors.replace(
+        /Ruida Hu/g,
+        '<strong class="modal-author-highlight">Ruida Hu</strong>'
+    );
     modalContent.innerHTML = `
         <img src="${paper.image}" alt="${paper.title}" class="modal-image">
         <h2 style="color: var(--primary-color); margin-bottom: 15px;">${paper.title}</h2>
-        <p style="font-style: italic; color: #666; margin-bottom: 10px;"><strong>Authors:</strong> ${paper.authors}</p>
+        <p style="font-style: italic; color: #666; margin-bottom: 10px;"><strong>Authors:</strong> ${formattedAuthors}</p>
         <p style="font-weight: 500; color: #555; margin-bottom: 20px;"><strong>Venue:</strong> ${paper.venue}</p>
         <h3 style="color: var(--primary-color); margin-bottom: 10px;">Abstract</h3>
         <p style="line-height: 1.6; margin-bottom: 20px;">${paper.abstract}</p>

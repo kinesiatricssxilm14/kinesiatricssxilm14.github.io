@@ -50,7 +50,26 @@ html {
 body {
     font-family: var(--font-primary);
     color: var(--text-color);
-    background: var(--bg-color);
+    background-color: #f8fafc;
+    background-image:
+        repeating-linear-gradient(
+            135deg,
+            rgba(79, 70, 229, 0.025) 0,
+            rgba(79, 70, 229, 0.025) 1px,
+            transparent 1px,
+            transparent 18px
+        ),
+        linear-gradient(
+            90deg,
+            #e8edff 0%,
+            #f4f7fc 16%,
+            #f8fafc 32%,
+            #f8fafc 68%,
+            #f0fdfa 84%,
+            #dff7f2 100%
+        );
+    background-size: auto;
+    background-attachment: fixed;
     line-height: 1.55;
     font-size: 16px;
     min-height: 100vh;
@@ -61,7 +80,7 @@ body {
 /* Container */
 .container {
     width: 100%;
-    max-width: 1040px;
+    max-width: 1240px;
     margin: 0 auto;
     padding: 0 var(--spacing-md);
 }
@@ -244,7 +263,8 @@ nav {
 /* Hero / About Section */
 .hero-section {
     padding: 1.4rem 0 1.1rem;
-    background-color: #ffffff;
+    background: rgba(255, 255, 255, 0.76);
+    backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -291,6 +311,11 @@ nav {
 .avatar-container:hover .avatar-caption {
     opacity: 1;
     transform: translateY(0);
+}
+
+.avatar-caption-date {
+    display: block;
+    margin-top: 0.15rem;
 }
 
 .profile-content {
@@ -420,7 +445,7 @@ nav {
     transition: var(--transition);
     cursor: pointer;
     align-items: center;
-    max-width: 900px;
+    max-width: 1100px;
     width: 100%;
     margin: 0 auto;
 }
@@ -462,12 +487,14 @@ nav {
 
 .paper-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
     gap: 0.55rem;
     margin-bottom: 0;
 }
 
 .publication-title {
+    flex: 1 1 240px;
     font-size: 0.9rem;
     color: #0f172a;
     margin: 0;
@@ -501,6 +528,9 @@ nav {
 .ccf-b { background-color: #2563eb; }
 .ccf-c { background-color: #16a34a; }
 .preprint { background-color: #7c3aed; }
+.venue-badge { background-color: #2563eb; }
+.journal-badge { background-color: #0f766e; }
+.award-badge { background-color: #d97706; }
 
 .publication-spotlight {
     display: none;

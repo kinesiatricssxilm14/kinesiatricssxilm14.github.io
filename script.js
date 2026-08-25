@@ -1,32 +1,26 @@
 /**
- * 学术主页 JavaScript 功能
- * 主要实现移动端导航菜单的展开和收起
+ * Academic homepage interactions.
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 获取汉堡菜单按钮和导航链接元素
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
     
-    // 点击汉堡菜单按钮时切换导航菜单的显示状态
     hamburger.addEventListener('click', function() {
         navLinks.classList.toggle('active');
         
-        // 汉堡菜单按钮动画效果
         const spans = hamburger.querySelectorAll('span');
         spans.forEach(span => {
             span.classList.toggle('active');
         });
     });
     
-    // 点击导航链接后关闭菜单（移动端）
     const links = document.querySelectorAll('.nav-links a');
     links.forEach(link => {
         link.addEventListener('click', function() {
             if (window.innerWidth <= 768) {
                 navLinks.classList.remove('active');
                 
-                // 恢复汉堡菜单按钮状态
                 const spans = hamburger.querySelectorAll('span');
                 spans.forEach(span => {
                     span.classList.remove('active');
@@ -35,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // 添加平滑滚动效果
     links.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -46,19 +39,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (targetElement) {
                 const headerHeight = document.querySelector('header').offsetHeight;
                 window.scrollTo({
-                    top: targetElement.offsetTop - headerHeight - 20, // 减去导航栏高度和额外间距
+                    top: targetElement.offsetTop - headerHeight - 20,
                     behavior: 'smooth'
                 });
             }
         });
     });
     
-    // 监听窗口大小变化，在大屏幕下重置导航菜单状态
     window.addEventListener('resize', function() {
         if (window.innerWidth > 768) {
             navLinks.classList.remove('active');
             
-            // 恢复汉堡菜单按钮状态
             const spans = hamburger.querySelectorAll('span');
             spans.forEach(span => {
                 span.classList.remove('active');
@@ -66,109 +57,143 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // 创建动态装饰背景
-    createFloatingDecorations();
-    
-    // 添加鼠标交互效果
-    addMouseInteraction();
-});
+    document.querySelectorAll('[data-expand-group]').forEach(button => {
+        button.addEventListener('click', function() {
+            const group = this.dataset.expandGroup;
+            const items = document.querySelectorAll(`[data-publication-group="${group}"]`);
+            const expanded = this.getAttribute('aria-expanded') === 'true';
 
-// 创建浮动装饰效果
-function createFloatingDecorations() {
-    const decorationsContainer = document.createElement('div');
-    decorationsContainer.className = 'floating-decorations';
-    document.body.appendChild(decorationsContainer);
-    
-    // 装饰元素类型
-    const elementTypes = ['circle', 'triangle', 'diamond', 'star'];
-    
-    // 创建多个装饰元素
-    for (let i = 0; i < 12; i++) {
-        createFloatingElement(decorationsContainer, elementTypes);
-    }
-    
-    // 定期创建新的装饰元素
-    setInterval(() => {
-        if (Math.random() < 0.4) { // 40%概率创建新元素
-            createFloatingElement(decorationsContainer, elementTypes);
-        }
-    }, 3000);
-}
-
-function createFloatingElement(container, types) {
-    const element = document.createElement('div');
-    const randomType = types[Math.floor(Math.random() * types.length)];
-    element.className = `floating-element ${randomType}`;
-    
-    // 随机位置和动画时长
-    const leftPosition = Math.random() * 100;
-    const animationDuration = 8 + Math.random() * 12; // 8-20秒
-    const animationDelay = Math.random() * 3; // 0-3秒延迟
-    
-    element.style.left = leftPosition + '%';
-    element.style.animationDuration = animationDuration + 's';
-    element.style.animationDelay = animationDelay + 's';
-    
-    container.appendChild(element);
-    
-    // 添加点击效果
-    element.addEventListener('click', () => {
-        element.style.transform += ' scale(1.5)';
-        element.style.filter = 'brightness(1.5) saturate(1.5)';
-        setTimeout(() => {
-            element.style.transform = element.style.transform.replace(' scale(1.5)', '');
-            element.style.filter = '';
-        }, 300);
+            items.forEach(item => item.classList.toggle('is-visible', !expanded));
+            this.setAttribute('aria-expanded', String(!expanded));
+            this.textContent = expanded
+                ? `View all ${group === 'first-author' ? 'first-author' : 'collaborative'} papers`
+                : 'Show fewer papers';
+        });
     });
-    
-    // 动画结束后移除元素
-    setTimeout(() => {
-        if (element.parentNode) {
-            element.parentNode.removeChild(element);
-        }
-    }, (animationDuration + animationDelay) * 1000);
-}
 
-// 添加鼠标交互效果
-function addMouseInteraction() {
-    let mouseX = 0;
-    let mouseY = 0;
-    
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        
-        // 获取所有装饰元素
-        const elements = document.querySelectorAll('.floating-element');
-        elements.forEach(element => {
-            const rect = element.getBoundingClientRect();
-            const elementX = rect.left + rect.width / 2;
-            const elementY = rect.top + rect.height / 2;
-            
-            // 计算鼠标与装饰元素的距离
-            const distance = Math.sqrt(
-                Math.pow(mouseX - elementX, 2) + Math.pow(mouseY - elementY, 2)
-            );
-            
-            // 如果距离小于120px，产生吸引效果
-            if (distance < 120) {
-                const angle = Math.atan2(mouseY - elementY, mouseX - elementX);
-                const force = (120 - distance) / 120; // 力度与距离成反比
-                const attractX = Math.cos(angle) * force * 30;
-                const attractY = Math.sin(angle) * force * 30;
-                
-                element.classList.add('mouse-attract');
-                element.style.transform = `translate(${attractX}px, ${attractY}px) rotate(${force * 90}deg) scale(${1 + force * 0.3})`;
-            } else {
-                element.classList.remove('mouse-attract');
-                element.style.transform = '';
+    const honorsButton = document.querySelector('[data-expand-honors]');
+    if (honorsButton) {
+        honorsButton.addEventListener('click', function() {
+            const expanded = this.getAttribute('aria-expanded') === 'true';
+            document.querySelectorAll('.honor-extra').forEach(item => {
+                item.classList.toggle('is-visible', !expanded);
+            });
+            this.setAttribute('aria-expanded', String(!expanded));
+            this.textContent = expanded ? 'View all honors and awards' : 'Show fewer honors';
+        });
+    }
+
+    document.querySelectorAll('.education-card, .activity-item, .experience-item, .honor-item').forEach(card => {
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+
+        const openDetails = () => openInfoModal(card);
+        card.addEventListener('click', openDetails);
+        card.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openDetails();
             }
         });
-     });
+    });
+});
+
+function openInfoModal(card) {
+    const modalContent = document.getElementById('modalContent');
+    const image = card.querySelector('.activity-logo, .conference-logo');
+    let title = '';
+    let details = [];
+
+    if (card.classList.contains('education-card')) {
+        title = card.querySelector('.education-degree')?.textContent || 'Education';
+        details = [...card.querySelectorAll('p')].map(item => item.textContent);
+    } else if (card.classList.contains('activity-item')) {
+        title = card.querySelector('.activity-title')?.textContent || 'Activity';
+        details = [...card.querySelectorAll('.activity-period, .activity-description')].map(item => item.textContent);
+    } else if (card.classList.contains('experience-item')) {
+        title = card.querySelector('.experience-title')?.textContent || 'Experience';
+        details = [...card.querySelectorAll('.experience-location, .experience-period')].map(item => item.textContent);
+    } else {
+        title = card.querySelector('.honor-title')?.textContent || 'Honor';
+        details = [card.querySelector('.honor-details')?.textContent].filter(Boolean);
+    }
+
+    modalContent.innerHTML = '';
+
+    if (image) {
+        const modalImage = document.createElement('img');
+        modalImage.src = image.src;
+        modalImage.alt = image.alt;
+        modalImage.className = 'modal-image info-modal-image';
+        modalContent.appendChild(modalImage);
+    }
+
+    const heading = document.createElement('h2');
+    heading.textContent = title;
+    modalContent.appendChild(heading);
+
+    details.forEach(detail => {
+        const paragraph = document.createElement('p');
+        paragraph.textContent = detail;
+        modalContent.appendChild(paragraph);
+    });
+
+    document.getElementById('paperModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
 }
 
-// 论文详情数据
+// Publication details
 const paperDetails = {
+    'tui-testing': {
+        title: 'Can LLMs Test Terminal User Interfaces?',
+        authors: 'Chao Peng#, Ruida Hu#, Ajitha Rajan, Tegawendé F. Bissyandé, Jacques Klein, Cuiyun Gao',
+        venue: 'arXiv preprint, 2026',
+        abstract: 'Terminal User Interfaces (TUIs) combine the stateful, screen-oriented behaviour of GUIs with terminal deployment and are now common in developer tools. Yet they lack a dedicated testing methodology. We survey 197 real-world TUI applications: only 12% of test code exercises the interface, and 45% of those tests never send input, checking a static frame instead. We turn these applications into a headless benchmark spanning ratatui/Rust, bubbletea/Go, textual/Python, and ink/TypeScript, packaging each as an instrumented Docker image. We record line and widget coverage where reliable, rendered terminal states, and crashes. Under equal wall-clock budgets, we compare four frontier LLMs with random exploration. No model dominates. Random is a strong time-budgeted baseline, but its crash advantage comes from higher throughput: per interaction, LLM guidance is more efficient and uniquely reaches input-gated faults. Automatically deriving launch inputs yields the largest practical gain, enabling applications that otherwise never start. Line coverage poorly predicts crash discovery, weakening it as a proxy for test effectiveness. Automated TUI testing is feasible but far from solved, and honest baselines matter more than model choice.',
+        image: 'paper_image/tui-testing.png',
+        links: [
+            { text: 'PDF', url: 'https://arxiv.org/pdf/2608.03743' }
+        ]
+    },
+    'cli-tool-bench': {
+        title: 'Evaluating LLM-Based 0-to-1 Software Generation in End-to-End CLI Tool Scenarios',
+        authors: 'Ruida Hu, Xinchen Wang, Chao Peng, Cuiyun Gao, David Lo*',
+        venue: 'arXiv preprint, 2026',
+        abstract: 'The evolution of Large Language Models (LLMs) has catalyzed a paradigm shift towards intent-driven software development, where autonomous agents are expected to design and deliver complete, runnable software systems from scratch. However, existing benchmarks fail to adequately assess this 0-to-1 generation capability because they rely on predefined structural scaffolds and rigid white-box unit testing. We introduce CLI-Tool-Bench, a structure-agnostic benchmark for ground-up generation of command-line tools. Powered by an automated black-box differential testing framework, it comprises 94 high-quality, real-world repositories spanning diverse programming languages and complexity levels. Extensive evaluation of seven state-of-the-art LLMs shows that top-tier models achieve a maximum overall success rate of only 43.8%, highlighting that 0-to-1 software generation remains highly challenging.',
+        image: 'paper_image/cli-tool-bench.png',
+        links: [
+            { text: 'PDF', url: 'https://arxiv.org/pdf/2604.06742' }
+        ]
+    },
+    'faun-eval': {
+        title: 'A Real-World Benchmark for Evaluating Fine-Grained Issue Solving Capabilities of Large Language Models',
+        authors: 'Ruida Hu, Chao Peng*, Jingyi Ren, Bo Jiang, Xiangxin Meng, Qinyun Wu, Pengfei Gao, Xinchen Wang, Cuiyun Gao*',
+        venue: 'arXiv preprint, 2024',
+        abstract: 'Automatically resolving software issues is crucial for software development in practice. Existing benchmarks either focus on small, self-contained problems or evaluate issue solving only end to end. We introduce FAUN-Eval, a benchmark designed to evaluate fine-grained issue-solving capabilities across question answering, fault localization, and code editing. The benchmark contains 300 entries curated from 30 well-known GitHub repositories and uses both LLM and manual checks to ensure data quality. Evaluation of ten LLMs reveals that the top-performing model differs across tasks, issue features can lead models to generate incorrect information, and models vary in their proficiency with texts of different lengths.',
+        image: 'paper_image/faun-eval.png',
+        links: [
+            { text: 'PDF', url: 'https://arxiv.org/pdf/2411.18019' }
+        ]
+    },
+    'swd-bench': {
+        title: 'Evaluating Repository-level Software Documentation via Question Answering and Feature-Driven Development',
+        authors: 'Xinchen Wang, Ruida Hu, Cuiyun Gao*, Pengfei Gao, Chao Peng*',
+        venue: 'arXiv preprint, 2026',
+        abstract: 'Software documentation is crucial for repository comprehension, yet existing benchmarks lack repository-level analysis and rely on unreliable evaluation strategies. We propose SWD-Bench, a benchmark that evaluates repository-level software documentation by treating LLMs as repository developers and measuring their ability to understand and implement functionality. SWD-Bench introduces three interconnected tasks: functionality detection, functionality localization, and functionality completion. Its construction pipeline yields 4,170 entries across the three tasks. Experiments highlight limitations in current repository-level documentation generation methods and show that documentation generated by the best-performing method improves SWE-Agent issue-solving performance by 20.00%.',
+        image: 'paper_image/swd-bench.png',
+        links: [
+            { text: 'PDF', url: 'https://arxiv.org/pdf/2604.06793' }
+        ]
+    },
+    'sr-eval': {
+        title: 'SR-Eval: Evaluating LLMs on Code Generation under Stepwise Requirement Refinement',
+        authors: 'Zexun Zhan, Shuzheng Gao, Ruida Hu, Cuiyun Gao',
+        venue: 'arXiv preprint, 2026',
+        abstract: 'Large language models have made remarkable progress in code generation, but existing benchmarks primarily treat the task as a static, single-turn problem. We present SR-Eval, a benchmark for iterative code generation under stepwise requirement refinement. It spans function- and repository-level tasks in Python and Java and contains 443 multi-turn tasks with 1,857 questions. Evaluation of 11 representative LLMs shows that this scenario remains highly challenging: the best model achieves only a 22.67% completion rate on function-level tasks and 20.00% on repository-level tasks. Prompting strategies also substantially influence performance.',
+        image: 'paper_image/sr-eval.png',
+        links: [
+            { text: 'PDF', url: 'https://arxiv.org/pdf/2509.18808' }
+        ]
+    },
     'trae-agent': {
         title: 'Trae Agent: An LLM-based Agent for Software Engineering with Test-time Scaling',
         authors: 'Pengfei Gao, Zhao Tian, Xiangxin Meng, Xinchen Wang, Ruida Hu, Yuanan Xiao, Yizhou Liu, Zhao Zhang, Junjie Chen, Cuiyun Gao, Yun Lin, Yingfei Xiong, Chao Peng, Xia Liu, Trae Research Team',
@@ -276,10 +301,10 @@ const paperDetails = {
             { text: 'Code', url: 'https://github.com/JohnnyPeng18/PyConf' }
         ]
     }
-    // 可以在这里添加更多论文的详情
+    // Add more publication details here.
 };
 
-// 打开论文详情模态框
+// Open publication details modal.
 function openPaperModal(paperId) {
     const paper = paperDetails[paperId];
     if (!paper) return;
@@ -298,16 +323,16 @@ function openPaperModal(paperId) {
     `;
     
     document.getElementById('paperModal').style.display = 'block';
-    document.body.style.overflow = 'hidden'; // 防止背景滚动
+    document.body.style.overflow = 'hidden';
 }
 
-// 关闭论文详情模态框
+// Close publication details modal.
 function closePaperModal() {
     document.getElementById('paperModal').style.display = 'none';
-    document.body.style.overflow = 'auto'; // 恢复滚动
+    document.body.style.overflow = 'auto';
 }
 
-// 点击模态框外部关闭
+// Close the modal when its backdrop is clicked.
 window.onclick = function(event) {
     const modal = document.getElementById('paperModal');
     if (event.target === modal) {
@@ -315,459 +340,4 @@ window.onclick = function(event) {
     }
 }
 
-// ===== 访问统计功能 =====
-
-// 访问统计数据存储
-const visitStats = {
-    totalVisits: 0,
-    todayVisits: 0,
-    locations: {},
-    currentLocation: '获取中...',
-    lastVisitDate: null
-};
-
-// 全球访问统计配置 - 使用免费的访问统计服务
-const GLOBAL_STATS_CONFIG = {
-    // 使用 visitorbadge.io 作为主要服务
-    services: {
-        primary: 'https://visitor-badge-reloaded.herokuapp.com/badge',
-        fallback: 'https://api.countapi.xyz'
-    },
-    siteId: 'kinesiatrics-homepage', // 网站唯一标识
-    fallbackToLocal: true
-};
-
-// 初始化访问统计
-function initVisitStats() {
-    console.log('🚀 初始化全球访问统计系统...');
-    
-    // 获取用户位置信息
-    getUserLocation();
-    
-    // 初始化访问统计
-    initVisitStats();
-}
-
-// 初始化访问统计
-function initVisitStats() {
-    console.log('📊 初始化访问统计系统...');
-    
-    // 不蒜子统计会自动加载，无需额外初始化
-    // 只需要初始化建站时间显示
-    initSiteTime();
-    
-    // 加载本地位置数据
-    loadLocalLocationData();
-}
-
-// 建站时间显示功能
-function initSiteTime() {
-    function siteTime() {
-        window.setTimeout("siteTime()", 1000);
-        var seconds = 1000;
-        var minutes = seconds * 60;
-        var hours = minutes * 60;
-        var days = hours * 24;
-        var years = days * 365;
-        var today = new Date();
-        var todayYear = today.getFullYear();
-        var todayMonth = today.getMonth() + 1;
-        var todayDate = today.getDate();
-        var todayHour = today.getHours();
-        var todayMinute = today.getMinutes();
-        var todaySecond = today.getSeconds();
-        
-        // 建站时间：2025年10月25日 (注意月份从0开始，所以9表示10月)
-        var t1 = Date.UTC(2025, 9, 25, 0, 0, 0);
-        var t2 = Date.UTC(todayYear, todayMonth - 1, todayDate, todayHour, todayMinute, todaySecond);
-        var diff = t2 - t1;
-        
-        var diffYears = Math.floor(diff / years);
-        var diffDays = Math.floor((diff / days) - diffYears * 365);
-        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
-        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
-        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
-        
-        const siteTimeElement = document.getElementById("sitetime");
-        if (siteTimeElement) {
-            siteTimeElement.innerHTML = "🕓 网站已运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 小时 " + diffMinutes + " 分 " + diffSeconds + " 秒";
-        }
-    }
-    siteTime();
-}
-async function recordGlobalVisit() {
-    try {
-        // 使用免费的计数API服务
-        const response = await fetch(`https://api.countapi.xyz/hit/${GLOBAL_STATS_CONFIG.siteId}/total-visits`, {
-            method: 'GET',
-            mode: 'cors'
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            console.log('✅ 全球访问计数成功:', data.value);
-            visitStats.totalVisits = data.value;
-            return data.value;
-        } else {
-            throw new Error('API响应失败');
-        }
-    } catch (error) {
-        console.error('❌ 记录全球访问失败:', error);
-        // 尝试备用服务
-        return await recordVisitFallback('total');
-    }
-}
-
-// 记录今日访问
-async function recordDailyVisit() {
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        const dailyKey = `daily-${today}`;
-        
-        const response = await fetch(`https://api.countapi.xyz/hit/${GLOBAL_STATS_CONFIG.siteId}/${dailyKey}`, {
-            method: 'GET',
-            mode: 'cors'
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            console.log('✅ 今日访问计数成功:', data.value);
-            visitStats.todayVisits = data.value;
-            return data.value;
-        } else {
-            throw new Error('API响应失败');
-        }
-    } catch (error) {
-        console.error('❌ 记录今日访问失败:', error);
-        return await recordVisitFallback('daily');
-    }
-}
-
-// 备用访问记录方法
-async function recordVisitFallback(type) {
-    console.log(`🔄 使用备用方法记录${type}访问...`);
-    
-    // 使用本地存储作为备用
-    const key = type === 'total' ? 'global-total-visits' : `daily-visits-${new Date().toISOString().split('T')[0]}`;
-    let count = parseInt(localStorage.getItem(key) || '0');
-    
-    // 检查是否是新的访问（简单的重复访问检测）
-    const sessionKey = `session-${type}-recorded`;
-    if (!sessionStorage.getItem(sessionKey)) {
-        count++;
-        localStorage.setItem(key, count.toString());
-        sessionStorage.setItem(sessionKey, 'true');
-    }
-    
-    if (type === 'total') {
-        visitStats.totalVisits = count;
-    } else {
-        visitStats.todayVisits = count;
-    }
-    
-    return count;
-}
-
-// 加载全球统计数据
-async function loadGlobalStats() {
-    try {
-        // 获取总访问量
-        const totalResponse = await fetch(`https://api.countapi.xyz/get/${GLOBAL_STATS_CONFIG.siteId}/total-visits`, {
-            method: 'GET',
-            mode: 'cors'
-        });
-        
-        if (totalResponse.ok) {
-            const totalData = await totalResponse.json();
-            visitStats.totalVisits = totalData.value || 0;
-        }
-        
-        // 获取今日访问量
-        const today = new Date().toISOString().split('T')[0];
-        const dailyResponse = await fetch(`https://api.countapi.xyz/get/${GLOBAL_STATS_CONFIG.siteId}/daily-${today}`, {
-            method: 'GET',
-            mode: 'cors'
-        });
-        
-        if (dailyResponse.ok) {
-            const dailyData = await dailyResponse.json();
-            visitStats.todayVisits = dailyData.value || 0;
-        }
-        
-        console.log('📈 全球统计数据加载完成:', {
-            total: visitStats.totalVisits,
-            today: visitStats.todayVisits
-        });
-        
-    } catch (error) {
-        console.error('❌ 加载全球统计数据失败:', error);
-        // 使用本地数据作为备用
-        loadLocalFallbackStats();
-    }
-}
-
-// 本地备用统计
-function initLocalFallbackStats() {
-    console.log('📱 启用本地备用统计模式...');
-    
-    // 从本地存储加载数据
-    loadLocalVisitData();
-    
-    // 生成唯一的访问ID
-    const visitId = generateVisitId();
-    
-    // 使用本地存储 + 时间戳的方式模拟全球统计
-    const globalKey = 'global-visit-stats';
-    const todayKey = 'today-visit-stats-' + new Date().toISOString().split('T')[0];
-    
-    // 获取或初始化全球统计
-    let globalStats = JSON.parse(localStorage.getItem(globalKey) || '{"total": 0, "visitors": []}');
-    let todayStats = JSON.parse(localStorage.getItem(todayKey) || '{"count": 0, "visitors": []}');
-    
-    // 检查是否是新访问者（基于浏览器指纹）
-    if (!globalStats.visitors.includes(visitId)) {
-        globalStats.total++;
-        globalStats.visitors.push(visitId);
-        localStorage.setItem(globalKey, JSON.stringify(globalStats));
-    }
-    
-    if (!todayStats.visitors.includes(visitId)) {
-        todayStats.count++;
-        todayStats.visitors.push(visitId);
-        localStorage.setItem(todayKey, JSON.stringify(todayStats));
-    }
-    
-    // 更新显示数据
-    visitStats.totalVisits = globalStats.total;
-    visitStats.todayVisits = todayStats.count;
-    
-    console.log('✅ 本地统计数据更新完成:', {
-        total: visitStats.totalVisits,
-        today: visitStats.todayVisits
-    });
-    
-    updateStatsDisplay();
-}
-
-// 生成访问者唯一ID（基于浏览器指纹）
-function generateVisitId() {
-    // 使用浏览器特征生成相对唯一的ID
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.textBaseline = 'top';
-    ctx.font = '14px Arial';
-    ctx.fillText('Browser fingerprint', 2, 2);
-    
-    const fingerprint = [
-        navigator.userAgent,
-        navigator.language,
-        screen.width + 'x' + screen.height,
-        new Date().getTimezoneOffset(),
-        canvas.toDataURL()
-    ].join('|');
-    
-    // 简单哈希
-    let hash = 0;
-    for (let i = 0; i < fingerprint.length; i++) {
-        const char = fingerprint.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash; // 转换为32位整数
-    }
-    
-    return 'visitor_' + Math.abs(hash).toString(36);
-}
-
-// 纯本地模式
-function useLocalOnlyMode() {
-    console.log('🏠 使用纯本地统计模式...');
-    
-    // 简单的本地计数
-    let totalVisits = parseInt(localStorage.getItem('local-total-visits') || '0');
-    const today = new Date().toISOString().split('T')[0];
-    let todayVisits = parseInt(localStorage.getItem(`local-daily-visits-${today}`) || '0');
-    
-    // 检查是否是今天的新访问
-    const lastVisitDate = localStorage.getItem('last-visit-date');
-    const sessionVisited = sessionStorage.getItem('session-visited');
-    
-    if (!sessionVisited) {
-        totalVisits++;
-        localStorage.setItem('local-total-visits', totalVisits.toString());
-        sessionStorage.setItem('session-visited', 'true');
-        
-        if (lastVisitDate !== today) {
-            todayVisits = 1; // 今天第一次访问
-        } else {
-            todayVisits++;
-        }
-        localStorage.setItem(`local-daily-visits-${today}`, todayVisits.toString());
-        localStorage.setItem('last-visit-date', today);
-    }
-    
-    visitStats.totalVisits = totalVisits;
-    visitStats.todayVisits = todayVisits;
-    
-    updateStatsDisplay();
-}
-
-// 简化的位置访问统计（仅本地）
-function updateLocationVisitCount(location) {
-    if (!location) return;
-    
-    console.log('🌏 更新地区统计 (本地模式):', location);
-    
-    // 使用本地存储统计地区访问
-    visitStats.locations[location] = (visitStats.locations[location] || 0) + 1;
-    
-    // 保存已知地区
-    saveKnownLocation(location);
-    
-    // 保存到本地存储
-    saveLocalVisitData();
-    
-    // 更新显示
-    updateLocationList();
-}
-
-// 获取已知地区列表
-function getKnownLocations() {
-    const saved = localStorage.getItem('knownLocations');
-    return saved ? JSON.parse(saved) : [];
-}
-
-// 保存已知地区
-function saveKnownLocation(location) {
-    const known = getKnownLocations();
-    if (!known.includes(location)) {
-        known.push(location);
-        localStorage.setItem('knownLocations', JSON.stringify(known));
-    }
-}
-
-// 从本地存储加载访问数据
-function loadLocalVisitData() {
-    const savedData = localStorage.getItem('visitStatsData');
-    if (savedData) {
-        const data = JSON.parse(savedData);
-        visitStats.totalVisits = data.totalVisits || 0;
-        visitStats.todayVisits = data.todayVisits || 0;
-        visitStats.locations = data.locations || {};
-        visitStats.lastVisitDate = data.lastVisitDate;
-    }
-}
-
-// 加载本地地区数据
-function loadLocalLocationData() {
-    const savedData = localStorage.getItem('locationStatsData');
-    if (savedData) {
-        visitStats.locations = JSON.parse(savedData);
-        updateLocationList();
-    }
-}
-
-// 保存本地访问数据
-function saveLocalVisitData() {
-    localStorage.setItem('visitStatsData', JSON.stringify(visitStats));
-}
-
-// 保存本地地区数据
-function saveLocalLocationData() {
-    localStorage.setItem('locationStatsData', JSON.stringify(visitStats.locations));
-}
-
-// 获取用户位置信息
-function getUserLocation() {
-    // 使用免费的IP地理位置API
-    fetch('https://ipapi.co/json/')
-        .then(response => response.json())
-        .then(data => {
-            if (data.city && data.country_name) {
-                const location = `${data.city}, ${data.country_name}`;
-                visitStats.currentLocation = location;
-                
-                // 保存已知地区
-                saveKnownLocation(location);
-                
-                // 更新地区访问统计（使用全球API）
-                updateLocationVisitCount(location);
-                
-                // 更新显示
-                updateStatsDisplay();
-            }
-        })
-        .catch(error => {
-            console.log('获取位置信息失败:', error);
-            visitStats.currentLocation = '未知位置';
-            updateStatsDisplay();
-        });
-}
-
-// 更新统计显示
-function updateStatsDisplay() {
-    // 更新总访问量
-    const totalElement = document.getElementById('totalVisits');
-    if (totalElement) {
-        totalElement.textContent = visitStats.totalVisits.toLocaleString();
-    }
-    
-    // 更新今日访问
-    const todayElement = document.getElementById('todayVisits');
-    if (todayElement) {
-        todayElement.textContent = visitStats.todayVisits.toLocaleString();
-    }
-    
-    // 更新当前位置
-    const locationElement = document.getElementById('currentLocation');
-    if (locationElement) {
-        locationElement.textContent = visitStats.currentLocation;
-    }
-    
-    // 更新访问地区列表
-    updateLocationList();
-}
-
-// 更新地区列表显示
-function updateLocationList() {
-    const locationListElement = document.getElementById('locationList');
-    if (!locationListElement) return;
-    
-    // 按访问次数排序
-    const sortedLocations = Object.entries(visitStats.locations)
-        .sort(([,a], [,b]) => b - a)
-        .slice(0, 5); // 只显示前5个地区
-    
-    if (sortedLocations.length === 0) {
-        locationListElement.innerHTML = '<div class="loading">暂无数据</div>';
-        return;
-    }
-    
-    const locationHTML = sortedLocations.map(([location, count]) => `
-        <div class="location-item">
-            <span class="location-name">${location}</span>
-            <span class="location-count">${count}</span>
-        </div>
-    `).join('');
-    
-    locationListElement.innerHTML = locationHTML;
-}
-
-// 切换访问统计面板显示
-function toggleVisitStats() {
-    const panel = document.getElementById('visitStatsPanel');
-    if (panel) {
-        panel.classList.toggle('active');
-    }
-}
-
-// 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', function() {
-    // 延迟初始化访问统计，避免影响页面加载速度
-    setTimeout(() => {
-        initVisitStats();
-        // 公开显示访问统计面板
-        const statsContainer = document.getElementById('visitStats');
-        if (statsContainer) {
-            statsContainer.style.display = 'block';
-        }
-    }, 1000);
-});
+// ===== End of script =====

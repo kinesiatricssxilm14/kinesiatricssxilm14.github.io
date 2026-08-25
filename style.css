@@ -419,9 +419,11 @@ nav {
 .profile-image .life-motto {
     width: 100%;
     margin: 0;
-    padding: 0.32rem 0.45rem;
+    padding: 0.45rem 0.55rem;
     text-align: center;
-    font-size: 0.78rem;
+    font-size: 0.92rem;
+    line-height: 1.3;
+    white-space: nowrap;
 }
 
 /* Education */
@@ -791,7 +793,7 @@ nav {
 }
 
 .engagement-group .section-title {
-    margin: 0 auto 0.8rem;
+    margin: 0 0 0.8rem;
 }
 
 .activities-list {
@@ -1299,6 +1301,70 @@ nav {
     font-weight: 600;
 }
 
+.honors-contact-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.55fr);
+    align-items: start;
+    gap: 1rem;
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+.honors-contact-layout > .section {
+    padding: 0.85rem 0;
+}
+
+.honors-contact-layout > .section > .container {
+    height: auto;
+    padding: 0.4rem 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+}
+
+.honors-contact-layout #honors .container {
+    display: flex;
+    flex-direction: column;
+}
+
+.honors-contact-layout #honors .honors-list {
+    width: 100%;
+    max-width: none;
+    margin: 1.1rem 0 0;
+}
+
+.honors-contact-layout #contact .container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0.65rem;
+}
+
+.honors-contact-layout #contact .section-title {
+    align-self: flex-start;
+    margin-bottom: 0;
+}
+
+.honors-contact-layout #contact .contact-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.honors-contact-layout #contact .email-card {
+    width: 100%;
+    min-width: 0;
+    min-height: 64px;
+}
+
 /* Modal */
 .modal {
     display: none;
@@ -1317,7 +1383,12 @@ nav {
     --modal-tint: #eff6ff;
     background:
         radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--modal-accent) 16%, transparent), transparent 28%),
-        linear-gradient(145deg, #f8fbff, var(--modal-tint));
+        linear-gradient(
+            145deg,
+            rgba(248, 251, 255, 0.82),
+            color-mix(in srgb, var(--modal-tint) 76%, transparent)
+        );
+    backdrop-filter: blur(14px);
     margin: 5vh auto;
     padding: 2.5rem;
     border-radius: 12px;
@@ -1490,6 +1561,12 @@ footer p {
     }
 
     .engagements-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .honors-contact-layout {
         grid-template-columns: 1fr;
     }
 }
@@ -1668,6 +1745,82 @@ footer p {
     }
 
 }
+
+/* Translucent card surfaces */
+.profile-content,
+.education-card,
+.publication-card,
+.engagement-group,
+.activity-item,
+.experience-item,
+.service-row,
+.email-card {
+    backdrop-filter: blur(8px);
+}
+
+.profile-content {
+    background:
+        radial-gradient(circle at 96% 8%, rgba(125, 211, 252, 0.16), transparent 25%),
+        rgba(248, 251, 255, 0.58);
+}
+
+.education-card:nth-child(1),
+.education-card:nth-child(4) { background: rgba(240, 253, 250, 0.62); }
+.education-card:nth-child(2) { background: rgba(240, 253, 244, 0.62); }
+.education-card:nth-child(3) { background: rgba(247, 254, 231, 0.62); }
+.education-card:nth-child(5) { background: rgba(236, 253, 245, 0.62); }
+
+.publication-card { background: rgba(248, 251, 255, 0.66); }
+.publication-card:nth-child(even) { background: rgba(250, 250, 255, 0.66); }
+
+.internship-group { background: rgba(240, 253, 250, 0.5); }
+.experience-group { background: rgba(245, 243, 255, 0.5); }
+
+.activity-item:first-child { background: rgba(236, 253, 245, 0.65); }
+.activity-item:nth-child(2) { background: rgba(240, 249, 255, 0.65); }
+.experience-item:nth-child(odd) { background: rgba(245, 243, 255, 0.65); }
+.experience-item:nth-child(even) { background: rgba(238, 242, 255, 0.65); }
+.experience-icon { background: rgba(241, 245, 249, 0.58); }
+
+.service-row { background: rgba(236, 254, 255, 0.58); }
+.service-row:nth-child(2) { background: rgba(238, 242, 255, 0.58); }
+
+.email-card { background: rgba(255, 241, 242, 0.62); }
+.email-card:nth-child(2) { background: rgba(245, 243, 255, 0.62); }
+
+.section-title { background: rgba(238, 242, 255, 0.68); }
+#education .section-title { background: rgba(236, 253, 245, 0.68); }
+#publications .section-title { background: rgba(239, 246, 255, 0.68); }
+#activities .section-title { background: rgba(236, 254, 255, 0.68); }
+#experiences .section-title { background: rgba(245, 243, 255, 0.68); }
+#services .section-title { background: rgba(236, 254, 255, 0.68); }
+#honors .section-title { background: rgba(255, 251, 235, 0.68); }
+#contact .section-title { background: rgba(255, 241, 242, 0.68); }
+
+.social-links a,
+.author-legend span,
+.publication-category,
+.service-icon,
+.service-tags span,
+.email-icon,
+.life-motto,
+.expand-button {
+    backdrop-filter: blur(6px);
+}
+
+.social-links a { background: rgba(239, 246, 255, 0.68); }
+.life-motto { background: rgba(255, 247, 237, 0.68); }
+.author-legend span { background: rgba(248, 251, 255, 0.68); }
+.author-legend strong { background: rgba(219, 234, 254, 0.72); }
+.publication-category { background: rgba(238, 242, 255, 0.68); }
+.publication-category:nth-of-type(2) { background: rgba(245, 243, 255, 0.68); }
+.service-icon { background: rgba(207, 250, 254, 0.7); }
+.service-row:nth-child(2) .service-icon { background: rgba(224, 231, 255, 0.7); }
+.service-tags span { background: rgba(236, 254, 255, 0.7); }
+.service-row:nth-child(2) .service-tags span { background: rgba(239, 246, 255, 0.7); }
+.email-icon { background: rgba(255, 228, 230, 0.72); }
+.email-card:nth-child(2) .email-icon { background: rgba(237, 233, 254, 0.72); }
+.expand-button { background: rgba(255, 255, 255, 0.68); }
 
 /* Visit Stats Panel (Hidden or simplified) */
 .visit-stats-container {
